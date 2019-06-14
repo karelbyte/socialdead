@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -18,16 +19,22 @@ class User extends Authenticatable
     public $incrementing = false;
 
     protected $fillable = [
+        'secret',
         'full_names', 'email', 'phone', 'address', 'nif', 'email_verified_at', 'password', 'avatar',
-        'birthdate', 'sex', 'occupation', 'civil_status_id', 'birthplace', 'country', 'who_you_are', 'website', 'facebook',
-        'twitter', 'religion_id', 'politics_id', 'status_id', 'remember_token', 'created_at', 'updated_at'];
+        'birthdate', 'sex_id', 'occupation', 'civil_status_id', 'birthplace', 'country', 'who_you_are', 'website', 'facebook',
+        'twitter', 'religion_id', 'politics_id', 'status_id', 'remember_token'];
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
 
     protected $hidden = [
       'password', 'remember_token'
     ];
 
     public function status () {
-        return $this->belongsTo(UserStatus::class);
+        return $this->hasOne(UserStatus::class, 'id', 'status_id');
     }
 
     public function sex () {
@@ -45,4 +52,45 @@ class User extends Authenticatable
     public function politics () {
         return $this->belongsTo(Politics::class);
     }
+
+    public function notifications () {
+        return $this->hasMany(Notification::class, 'to_user', 'uid')->where('status_id', 1 );
+    }
+
+    public function notificationsAll () {
+        return $this->hasMany(Notification::class, 'to_user', 'uid')->wherein('status_id', [1, 3] );
+    }
+
+
+    public function settingNotifications () {
+        return $this->hasone(NotificationSetting::class, 'user_uid', 'uid');
+    }
+
+    public function contacts ()
+    {
+        return $this->hasMany(Contact::class);
+    }
+
+    public function isContact($uid) {
+       $_contact =  Contact::query()->where('user_uid', $this->uid)->where('contact_user_uid', $uid)->first();
+       return  $_contact === null;
+    }
+
+    public function Jobs() {
+        return $this->hasMany(UserJob::class, 'user_uid', 'uid');
+    }
+
+    public function Hobbies() {
+        return $this->hasOne(UserHobbies::class, 'user_uid', 'uid');
+    }
+
+    public function Photos() {
+        return $this->hasMany(Photo::class, 'user_uid', 'uid')->orderBy('photos.moment', 'desc');
+    }
+
+    public function Videos() {
+        return $this->hasMany(Video::class, 'user_uid', 'uid')->orderBy('videos.moment', 'desc');
+    }
+
+
 }

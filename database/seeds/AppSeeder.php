@@ -12,34 +12,8 @@ class AppSeeder extends Seeder
      */
     public function run()
     {
-        // CREANDO UN USUARIO DE PRUEBA
-    /*   User::query()->create([
-           'full_names' => 'karel puerto diaz',
-           'email' => 'karelpuerto78@gmail.com',
-           'password' => Hash::make('12345'),
-           'sex' => 1,
-           'birthdate' => '1978-10-07'
-       ]);
 
-       $users_status = [
-           ['id' => 1, 'descriptor' => 'Activo'],
-           ['id' => 2, 'descriptor' => 'Inactivo'],
-           ['id' => 3, 'descriptor' => 'Desconectado'],
-           ['id' => 4, 'descriptor' => 'No molestar'],
-       ];
-       \App\Models\UserStatus::query()->insert($users_status);
 
-        $users_sex = [
-            ['id' => 1, 'descriptor' => 'Masculino'],
-            ['id' => 2, 'descriptor' => 'Femenino'],
-        ];
-        \App\Models\UserSex::query()->insert($users_sex);
-
-        $users_civil_status = [
-            ['id' => 1, 'descriptor' => 'Casado'],
-            ['id' => 2, 'descriptor' => 'Soltero'],
-        ];
-        \App\Models\UserCivilStatus::query()->insert($users_civil_status);
 
         $religions = [
             ['id' => 1, 'descriptor' => 'Ateo'],
@@ -53,7 +27,7 @@ class AppSeeder extends Seeder
             ['id' => 9, 'descriptor' => 'Protestante'],
 
         ];
-        \App\Models\Religion::query()->insert($religions);*/
+        \App\Models\Religion::query()->insert($religions);
 
         $politics = [
             ['id' => 1, 'descriptor' => 'Apolitico'],
@@ -64,5 +38,36 @@ class AppSeeder extends Seeder
             ['id' => 6, 'descriptor' => 'Socialista'],
         ];
         \App\Models\Politics::query()->insert($politics);
+
+        $users_status = [
+            ['id' => 1, 'descriptor' => 'Activo'],
+            ['id' => 2, 'descriptor' => 'Inactivo'],
+            ['id' => 3, 'descriptor' => 'Desconectado'],
+            ['id' => 4, 'descriptor' => 'No molestar'],
+        ];
+        \App\Models\UserStatus::query()->insert($users_status);
+
+        $users_sex = [
+            ['id' => 1, 'descriptor' => 'Masculino'],
+            ['id' => 2, 'descriptor' => 'Femenino'],
+        ];
+        \App\Models\UserSex::query()->insert($users_sex);
+
+        $users_civil_status = [
+            ['id' => 1, 'descriptor' => 'Casado'],
+            ['id' => 2, 'descriptor' => 'Soltero'],
+        ];
+        \App\Models\UserCivilStatus::query()->insert($users_civil_status);
+
+        // CREANDO UN USUARIO DE PRUEBA
+      User::query()->create([
+           'full_names' => 'karel puerto diaz',
+           'email' => 'karelpuerto78@gmail.com',
+           'password' => Hash::make('12345'),
+           'sex_id' => 1,
+           'secret' => \Illuminate\Support\Str::random(25),
+           'birthdate' => '1978-10-07'
+       ]);
+
     }
 }

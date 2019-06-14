@@ -18,3 +18,17 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+// CONFIRMACION DE CUENTA DEL USUARIO SOCIALDEAD
+Route::get('/confirmacion-de-cuenta/{token}', 'UsersController@confirmAcount');
+
+Route::get('/prueba', function () {
+
+  $mail_data = [
+        'user_name' => 'KAREL PUERTO',
+        'url' => url('/')
+    ];
+    return View('emails.user_welcome', ['data' => $mail_data]);
+});
+
+

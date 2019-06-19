@@ -26,11 +26,23 @@ class ContactsController extends Controller
 
         $data = Contact::query()->with('kin')->join('users', 'users.uid','contacts.contact_user_uid')
             ->where('contacts.user_uid', $request->user()->uid)
-            ->select('users.full_names', 'users.occupation', 'users.avatar',  'users.who_you_are',
+            ->select('users.full_names', 'users.occupation', 'users.avatar',  'users.who_you_are', 'users.birthdate',
                 'users.status_id as status_user', 'contacts.*')
             ->get();
 
         return  response()->json(ContactFullResource::collection($data));
+    }
+
+    public function setContactsUpdate(Request $request) {
+
+        Contact::query()
+            ->where('user_uid', $request->user()->uid)
+            ->where('contact_user_uid', $request->uid)
+            ->update([
+              'type_id' => $request->type,
+              'kin_id' => $request->kin
+            ]);
+        return http_response_code(200);
     }
 
     public function setConfirmContact(Request $request) {

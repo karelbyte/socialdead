@@ -23,6 +23,8 @@ class CreatePhotosTable extends Migration
             $table->tinyInteger('rating')->unsigned()->default(0);
             $table->string('url', 120)->nullable();
             $table->tinyInteger('status_id')->unsigned()->default(0);
+            $table->tinyInteger('in_history')->unsigned()->default(0);
+            $table->bigInteger('history_id')->unsigned()->default(0);
             $table->engine = 'InnoDB';
         });
     }

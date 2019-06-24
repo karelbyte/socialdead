@@ -16,9 +16,7 @@ class ContactResource extends JsonResource
      */
     public function toArray($request)
     {
-
         $avatar = $this->avatar === null ? $this->symbol($this->birthdate)['url'] : url('/') . $this->avatar;
-
         return [
             'uid' => $this->contact_user_uid,
             'full_names' =>  $this->full_names,

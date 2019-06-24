@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHistoriesTable extends Migration
+class CreateChatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,14 @@ class CreateHistoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('histories', function (Blueprint $table) {
+        Schema::create('chats', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('user_uid');
             $table->foreign('user_uid')->references('uid')->on('users')->onDelete('cascade');
-            $table->unsignedTinyInteger('type');
-            $table->dateTime('moment');
-            $table->string('title', 120)->nullable();
-            $table->string('subtitle', 120)->nullable();
-            $table->tinyInteger('status_id')->unsigned();
-            $table->engine = 'InnoDB';
+            $table->uuid('for_user_uid');
+            $table->string('msj', 120);
+            $table->unsignedTinyInteger('status_id');
+            $table->timestamps();
         });
     }
 
@@ -33,6 +31,6 @@ class CreateHistoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('histories');
+        Schema::dropIfExists('chats');
     }
 }

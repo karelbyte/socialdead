@@ -26,7 +26,7 @@ class Chat extends Model
     /**
      * @var array
      */
-    protected $fillable = ['user_uid', 'for_user_uid', 'msj', 'status_id', 'created_at', 'updated_at'];
+    protected $fillable = ['user_uid', 'for_user_uid', 'msj', 'type', 'status_id', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

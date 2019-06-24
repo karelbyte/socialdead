@@ -23,7 +23,9 @@ class PhotoResource extends JsonResource
             'subtitle' =>  $this->subtitle,
             'rating' => $this->rating,
             'url'=> url('/') . '/storage/' . $this->user_uid . '/photos/' . $this->url,
-            'status' => $this->status_id
+            'in_history' => (bool) $this->in_history,
+            'history_id' =>  $this->history_id,
+            'status' => (bool) $this->status_id
         ];
     }
 }

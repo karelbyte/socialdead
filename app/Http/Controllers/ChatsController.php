@@ -12,15 +12,14 @@ class ChatsController extends Controller
 {
     public function getMessages(Request $request) {
         $data1 = Chat::query()->where('user_uid', $request->user()->uid)
-            ->where('for_user_uid', $request->uid)->selectRaw('id, user_uid, msj, status_id, created_at')
+            ->where('for_user_uid', $request->uid)->selectRaw('id, user_uid, msj, status_id, type, created_at')
             ->get();
         $data2 = Chat::query()->where('user_uid', $request->uid )
-            ->where('for_user_uid', $request->user()->uid )->selectRaw('id, user_uid, msj, status_id, created_at')
+            ->where('for_user_uid', $request->user()->uid )->selectRaw('id, user_uid, msj, status_id, type, created_at')
             ->get();
         $data = $data1->concat($data2);
         $data = Collect($data->sortBy('id')->values()->all());
-        $slice = $data->count() - 7;
-        return ChatResource::collection($data->slice($slice));
+        return ChatResource::collection($data);
     }
 
     public function setMessage(Request $request) {
@@ -28,7 +27,8 @@ class ChatsController extends Controller
           'user_uid' => $request->uid,
           'for_user_uid' => $request->to,
           'status_id' => 1,
-          'msj' =>  $request->msj[0]
+          'type' => $request->type,
+          'msj' =>  $request->msj[$request->type]
        ]);
 
       broadcast(new MessageEvent($request->to, new ChatResource($msj) ))->toOthers();

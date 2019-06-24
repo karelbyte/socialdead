@@ -12,7 +12,7 @@ class Photo extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['user_uid', 'moment', 'title', 'subtitle', 'url', 'rating', 'status_id'];
+    protected $fillable = ['user_uid', 'moment', 'title', 'subtitle', 'url', 'rating', 'status_id', 'in_history', 'history_id'];
 
     public function user()
     {

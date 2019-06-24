@@ -23,6 +23,14 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('users/search', 'UsersController@search');
 
+    Route::prefix('index')->group(function () {
+        Route::post('/profile-data', 'IndexController@getProfileData');
+    });
+
+    Route::prefix('histories')->group(function () {
+        Route::get('/', 'HistoriesController@getHistories');
+    });
+
     Route::prefix('user')->group(function () {
         Route::get('/', 'UsersController@getProfile');
         Route::post('status', 'UsersController@updateStatus');

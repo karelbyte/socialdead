@@ -29,7 +29,7 @@ class ProfilesController extends Controller
     public function updateProfile(Request $request)
     {
       $user = User::query()->find($request->user()->uid);
-      $user ->update([
+      $user->update([
             'full_names' => $request->full_names,
             'email' =>$request->email,
             'phone' =>$request->phone,
@@ -44,8 +44,8 @@ class ProfilesController extends Controller
             'website' =>$request->website,
             'facebook' =>$request->facebook,
             'twitter' =>$request->twitter,
-            'religion_id' =>$request->religion,
-            'politics_id' =>$request->politics,
+            'religion_id' =>$request->religion['id'],
+            'politics_id' =>$request->politics['id'],
             'occupation' =>$request->occupation,
         ]);
 

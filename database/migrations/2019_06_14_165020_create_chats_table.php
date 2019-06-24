@@ -21,6 +21,9 @@ class CreateChatsTable extends Migration
             $table->string('msj', 120);
             $table->unsignedTinyInteger('status_id');
             $table->timestamps();
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

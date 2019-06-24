@@ -18,6 +18,9 @@ class CreateWebSocketsStatisticsEntriesTable extends Migration
             $table->integer('websocket_message_count');
             $table->integer('api_message_count');
             $table->nullableTimestamps();
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
     /**

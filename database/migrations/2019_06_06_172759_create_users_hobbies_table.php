@@ -24,6 +24,8 @@ class CreateUsersHobbiesTable extends Migration
             $table->string('writers', 250);
             $table->string('others', 250);
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

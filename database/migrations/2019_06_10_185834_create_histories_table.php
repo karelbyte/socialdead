@@ -23,6 +23,8 @@ class CreateHistoriesTable extends Migration
             $table->string('subtitle', 120)->nullable();
             $table->tinyInteger('status_id')->unsigned();
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

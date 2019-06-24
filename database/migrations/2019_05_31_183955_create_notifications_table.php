@@ -23,6 +23,8 @@ class CreateNotificationsTable extends Migration
             $table->dateTime('moment');
             $table->string('note', 120)->nullable();
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

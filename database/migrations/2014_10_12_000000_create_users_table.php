@@ -46,6 +46,8 @@ class CreateUsersTable extends Migration
             $table->timestamps();
             $table->primary('uid');
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

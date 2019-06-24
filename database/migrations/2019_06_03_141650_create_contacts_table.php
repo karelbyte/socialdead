@@ -23,6 +23,8 @@ class CreateContactsTable extends Migration
             $table->tinyInteger('status_id')->unsigned();
             $table->timestamps();
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

@@ -26,6 +26,8 @@ class CreateVideosTable extends Migration
             $table->tinyInteger('in_history')->unsigned()->default(0);
             $table->bigInteger('history_id')->unsigned()->default(0);
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

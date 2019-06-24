@@ -21,6 +21,8 @@ class CreateNotificationsSettingsTable extends Migration
             $table->tinyInteger('notification_reminders')->default(1);
             $table->tinyInteger('chat_sound')->default(1);
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

@@ -16,7 +16,15 @@ class ChatResource extends JsonResource
     public function toArray($request)
     {
         if ($this->type === 'text')  $da = [ 'text'=> $this->msj ];
-        if ($this->type === 'emoji')  [ $da = [ 'emoji'=> $this->msj ]];
+        if ($this->type === 'emoji') $da = [ 'emoji'=> $this->msj ];
+        if ($this->type === 'file')  {
+             $da = [
+                'file' => [
+                'name'=> $this->msj ,
+                'url'=> url('/') . '/storage/' . $this->user_uid . '/files/' . $this->msj
+                ]
+             ];
+        }
          return [
             'id' => $this->id,
             'type' => $this->type,

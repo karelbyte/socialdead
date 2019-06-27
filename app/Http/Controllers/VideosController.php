@@ -43,12 +43,18 @@ class VideosController extends Controller
                     Storage::disk('public')->delete($patch);
                     $name =  $pureName . '.mp4';
                 }
+                FFMpeg::fromDisk('public')
+                    ->open($uid .'/videos/' . $name)
+                    ->getFrameFromSeconds(3)
+                    ->export()
+                    ->toDisk('public')
+                    ->save($uid .'/videos/' . $pureName . '.png');
                 Video::query()->create([
                     'user_uid' => $uid,
                     'moment' => Carbon::now(),
                     'url' =>  $name,
-                    'title' =>  'sin titulo',
-                    'subtitle' =>  'sin subtitulo'
+                    'title' => 'sin titulo',
+                    'subtitle' => 'sin subtitulo'
                 ]);
                 return response()->json('Se archivo el video!');
             } else {

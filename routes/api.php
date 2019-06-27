@@ -100,6 +100,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('chats')->group(function () {
         Route::post('messages', 'ChatsController@getMessages');
         Route::post('send-message', 'ChatsController@setMessage');
+        Route::post('send-message-file', 'ChatsController@setMessage_file');
     });
 
 });

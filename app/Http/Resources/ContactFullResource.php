@@ -18,7 +18,7 @@ class ContactFullResource extends JsonResource
     public function toArray($request)
     {
         $avatar = $this->avatar === null ? Image::make($this->symbol($this->birthdate)['url'])->encode('data-url')
-            : Image::make(storage_path('app/public/') .  $this->contact_user_uid . '/profile/avatar/' . $this->avatar)->encode('data-url');
+            : Image::make(storage_path('app/public/') .  $this->contact_user_uid . '/profile/avatar/' . $this->avatar)->encode('data-url', 50);
 
         return [
             'uid' => $this->contact_user_uid,

@@ -13,7 +13,7 @@ class UserProfileGeneral extends JsonResource
     public function toArray($request)
     {
         $avatar = $this->avatar === null ? Image::make($this->symbol($this->birthdate)['url'])->encode('data-url')
-            : Image::make( storage_path('app/public/') . $this->uid . '/profile/avatar/' . $this->avatar)->encode('data-url');
+            : Image::make( storage_path('app/public/') . $this->uid . '/profile/avatar/' . $this->avatar)->encode('data-url', 50);
         return [
             'full_names' =>  $this->full_names,
             'email' => $this->email,

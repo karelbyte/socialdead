@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Intervention\Image\Facades\Image;
 
-class PhotoResource extends JsonResource
+class IndexPhotoResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,17 +17,18 @@ class PhotoResource extends JsonResource
      */
     public function toArray($request)
     {
+
         return [
+            'cron' => Carbon::now()->timestamp + $this->id,
+            'user' => new UserSearch(User::query()->find($this->user_uid)),
             'id' => $this->id,
-            'moment' => Carbon::parse($this->moment)->format('d-m-Y H:i'),
+            'moment' => (int) Carbon::parse($this->moment)->timestamp,
             'time_ago' => Carbon::parse($this->moment)->diffForHumans(),
             'title' => $this->title,
             'subtitle' =>  $this->subtitle,
             'rating' => $this->rating,
+            'type' => 1, // IMAGENES
             'url'=> Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $this->url)->encode('data-url', 50)->encoded,
-            'in_history' => (bool) $this->in_history,
-            'history_id' =>  $this->history_id,
-            'status' => (bool) $this->status_id
         ];
     }
 }

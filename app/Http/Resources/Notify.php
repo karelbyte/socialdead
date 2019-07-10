@@ -18,7 +18,7 @@ class Notify extends JsonResource
             : url('/') . $this->fromUser->avatar;*/
 
         $avatar = $this->fromUser->avatar === null ? Image::make($this->symbol($this->birthdate)['url'])->encode('data-url')
-            : Image::make(storage_path('app/public/') . $this->fromUser->uid . '/profile/avatar/' . $this->fromUser->avatar)->encode('data-url');
+            : Image::make(storage_path('app/public/') . $this->fromUser->uid . '/profile/avatar/' . $this->fromUser->avatar)->encode('data-url', 50);
 
         return [
             'id' => $this->id,

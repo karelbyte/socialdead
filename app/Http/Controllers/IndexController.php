@@ -3,9 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ContactResource;
+use App\Http\Resources\IndexPhotoResource;
+use App\Http\Resources\IndexVideoResource;
 use App\Http\Resources\PhotoResource;
 use App\Http\Resources\UserProfileGeneral;
 use App\Http\Resources\VideoResource;
+use App\Models\Contact;
+use App\Models\Photo;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class IndexController extends Controller
@@ -31,15 +37,46 @@ class IndexController extends Controller
         $videos = $request->user()->videos()->orderBy('moment', 'desc')->take(6)->get();
 
         // CONTACTOS 6
-        $contacts = $request->user()->contacts()->orderBy('created_at', 'desc')->take(6)->get();
+
+        $contacts = Contact::query()->join('users', 'users.uid','contacts.contact_user_uid')
+            ->where('contacts.user_uid', $request->user()->uid)
+            ->take(6)->get();
 
         $data = [
             'profile' => new UserProfileGeneral($request->user()),
             'hobbies' =>  $Hobb,
             'photos' => PhotoResource::collection( $photos ),
             'videos' => VideoResource::collection( $videos ),
-            'contacts' => ContactResource::collection( $contacts),
+            'contacts' => ContactResource::collection($contacts),
         ];
         return $data;
+    }
+
+    public function getWall (Request $request) {
+
+        $data = new Collection();
+        $photos = Contact::query()->leftJoin('photos', 'contacts.contact_user_uid', 'photos.user_uid')
+            ->where('contacts.user_uid', $request->user()->uid)
+            ->whereRaw('datediff(now(), photos.moment) <=10')
+            ->select( 'contacts.contact_user_uid as uid', 'photos.*')
+            ->orderBy( 'photos.moment', 'desc')
+            ->get();
+        foreach ($photos as $photo) {
+            $data->push(new IndexPhotoResource($photo));
+        }
+
+        $videos = Contact::query()->leftJoin('videos', 'contacts.contact_user_uid', 'videos.user_uid')
+            ->where('contacts.user_uid', $request->user()->uid)
+            ->whereRaw('datediff(now(), videos.moment) <=10')
+            ->select( 'contacts.contact_user_uid as uid', 'videos.*')
+            ->orderBy( 'videos.moment', 'desc')
+            ->get();
+
+        foreach ($videos as $video) {
+            $data->push(new IndexVideoResource($video));
+        }
+
+        $sorted =$data->sortByDesc('moment');
+        return $sorted->values()->all();
     }
 }

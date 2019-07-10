@@ -51,6 +51,7 @@ class PhotosController extends Controller
     }
 
     public function updatePhoto (Request $request) {
+        $historyID = 0;
         if ($request->in_history ) {
             if ($request->history_id === 0  ||  $request->history_id === null)
             {
@@ -67,6 +68,7 @@ class PhotosController extends Controller
                     'item' => $request->id,
                     'status_id' => 1
                 ]);
+                $historyID = $det->id;
             }
         } else {
             HistoryDetails::query()->where('id', $request->history_id)->delete();
@@ -76,7 +78,7 @@ class PhotosController extends Controller
             'subtitle' => $request->subtitle,
             'status_id' => $request->status_id,
             'in_history' => $request->in_history,
-            'history_id' => $request->in_history ? $det->id : 0
+            'history_id' => $historyID
         ]);
         return http_response_code(200);
     }

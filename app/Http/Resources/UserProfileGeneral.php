@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Traits\Zodiac;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Intervention\Image\Facades\Image;
 
 class UserProfileGeneral extends JsonResource
 {
@@ -11,8 +12,8 @@ class UserProfileGeneral extends JsonResource
 
     public function toArray($request)
     {
-        $avatar = $this->avatar === null ? $this->symbol($this->birthdate)['url'] : url('/') . $this->avatar;
-
+        $avatar = $this->avatar === null ? Image::make($this->symbol($this->birthdate)['url'])->encode('data-url')
+            : Image::make( storage_path('app/public/') . $this->uid . '/profile/avatar/' . $this->avatar)->encode('data-url');
         return [
             'full_names' =>  $this->full_names,
             'email' => $this->email,
@@ -30,7 +31,7 @@ class UserProfileGeneral extends JsonResource
             'twitter' => $this->twitter,
             'religion' => $this->religion,
             'politics' => $this->politics,
-            'avatar' => $avatar,
+            'avatar' => $avatar->encoded,
             'occupation' => $this->occupation,
             'zodiac' => $this->symbol($this->birthdate)
         ];

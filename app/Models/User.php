@@ -88,6 +88,14 @@ class User extends Authenticatable
         return $this->hasMany(Photo::class, 'user_uid', 'uid')->orderBy('photos.moment', 'desc');
     }
 
+    // FOTOS PUBLICAS ULTIMOS 10 DIAS
+    public function PhotosPublic() {
+        return $this->hasMany(Photo::class, 'user_uid', 'uid')
+            ->orderBy('photos.moment', 'desc')
+            ->whereRaw('datediff(now(), photos.moment) <= 10')
+            ->where('status_id', 1);
+    }
+
     public function Videos() {
         return $this->hasMany(Video::class, 'user_uid', 'uid')->orderBy('videos.moment', 'desc');
     }

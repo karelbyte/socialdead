@@ -19,6 +19,8 @@ class ChatsController extends Controller
         $data2 = Chat::query()->where('user_uid', $request->uid )
             ->where('for_user_uid', $request->user()->uid )->selectRaw('id, user_uid, msj, status_id, type, created_at')
             ->get();
+        Chat::query()->where('user_uid', $request->uid )
+            ->where('for_user_uid', $request->user()->uid )->update(['status_id' => 2]);
         $data = $data1->concat($data2);
         $data = Collect($data->sortBy('id')->values()->all());
         return ChatResource::collection($data);

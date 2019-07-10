@@ -17,6 +17,7 @@ use Intervention\Image\Facades\Image;
 class ProfilesController extends Controller
 {
     //  ENVIADO PERFIL AL FRONT USER
+
     public function getProfile(Request $request) {
         $data = [
             'profile' => new UserProfileGeneral($request->user()),
@@ -69,7 +70,7 @@ class ProfilesController extends Controller
         $name = Carbon::now()->timestamp;
         $img->save($patch. '/'. $name. '.' . $ext , 70);
 
-        $request->user()->update(['avatar' => '/storage/' . $request->user()->uid . '/profile/avatar/' . $name .'.' .$ext]);
+        $request->user()->update(['avatar' => $name .'.' .$ext]);
 
         return new UserOnly($request->user());
     }

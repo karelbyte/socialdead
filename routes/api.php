@@ -25,6 +25,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::prefix('index')->group(function () {
         Route::post('/profile-data', 'IndexController@getProfileData');
+        Route::post('/wall', 'IndexController@getWall');
     });
 
     Route::prefix('histories')->group(function () {
@@ -69,6 +70,7 @@ Route::middleware(['auth:api'])->group(function () {
 
         Route::get('/hobbies', 'ProfilesController@getProfileHobbies');
         Route::post('/hobbies-add', 'ProfilesController@addProfileHobbies');
+
     });
 
     Route::prefix('photos')->group(function () {

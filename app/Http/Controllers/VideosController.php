@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\IndexVideoResource;
 use App\Http\Resources\VideoResource;
 use App\Models\History;
 use App\Models\HistoryDetails;
@@ -18,6 +19,11 @@ class VideosController extends Controller
     public function getVideoLists(Request $request) {
         $data = $request->user()->videos;
         return  VideoResource::collection( $data);
+    }
+
+    public function getVideo($id) {
+        $data = Video::query()->find($id);
+        return new IndexVideoResource($data);
     }
 
     public function saveVideos(Request $request) {

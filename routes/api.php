@@ -74,27 +74,19 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     Route::prefix('photos')->group(function () {
-
         Route::get('lists', 'PhotosController@getPhotosLists');
         Route::post('save', 'PhotosController@savePhoto');
         Route::delete('delete/{id}', 'PhotosController@destroyPhoto');
-
-       // Route::post('/set-photo-to-album', 'PhotosController@setPhotoToAlbum');
-
-       // Route::get('/exit-photo/{id}', 'PhotosController@exitPhoto');
+        Route::get('photo/{id}', 'PhotosController@getPhoto');
         Route::post('update', 'PhotosController@updatePhoto');
         Route::post('to-history', 'PhotosController@toHistory');
     });
 
     Route::prefix('videos')->group(function () {
-
         Route::get('lists', 'VideosController@getVideoLists');
         Route::post('save', 'VideosController@saveVideos');
         Route::delete('delete/{id}', 'VideosController@destroyVideo');
-
-        // Route::post('/set-photo-to-album', 'PhotosController@setPhotoToAlbum');
-
-        // Route::get('/exit-photo/{id}', 'PhotosController@exitPhoto');
+        Route::get('video/{id}', 'VideosController@getVideo');
         Route::post('update', 'VideosController@updateVideo');
         Route::post('to-history', 'VideosController@toHistory');
     });

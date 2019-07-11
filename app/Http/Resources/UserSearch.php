@@ -13,7 +13,7 @@ class UserSearch extends JsonResource
     public function toArray($request)
     {
         $avatar = $this->avatar === null ? Image::make($this->symbol($this->birthdate)['url'])->encode('data-url')
-            : Image::make(storage_path('app/public/') . $this->uid . '/profile/avatar/' . $this->avatar)->encode('data-url', 50);
+            : Image::make(storage_path('app/public/') . $this->uid . '/profile/avatar/' . $this->avatar)->resize(150, 150)->encode('data-url', 50);
 
         return [
             'value' => $this->uid,

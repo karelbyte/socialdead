@@ -6,6 +6,8 @@ use App\Http\Resources\ContactResource;
 use App\Http\Resources\IndexPhotoResource;
 use App\Http\Resources\IndexVideoResource;
 use App\Http\Resources\PhotoResource;
+use App\Http\Resources\ThumbsPhotoResource;
+use App\Http\Resources\ThumbsVideoResource;
 use App\Http\Resources\UserProfileGeneral;
 use App\Http\Resources\VideoResource;
 use App\Models\Contact;
@@ -45,8 +47,8 @@ class IndexController extends Controller
         $data = [
             'profile' => new UserProfileGeneral($request->user()),
             'hobbies' =>  $Hobb,
-            'photos' => PhotoResource::collection( $photos ),
-            'videos' => VideoResource::collection( $videos ),
+            'photos' => ThumbsPhotoResource::collection( $photos ),
+            'videos' => ThumbsVideoResource::collection( $videos ),
             'contacts' => ContactResource::collection($contacts),
         ];
         return $data;

@@ -17,6 +17,11 @@ class PhotosController extends Controller
         return  PhotoResource::collection( $data);
     }
 
+    public function getPhoto($id) {
+        $data = Photo::query()->find($id);
+        return new PhotoResource($data);
+    }
+
     public function savePhoto(Request $request) {
         try {
             $uid = $request->user()->uid;

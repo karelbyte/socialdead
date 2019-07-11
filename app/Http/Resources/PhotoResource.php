@@ -23,7 +23,7 @@ class PhotoResource extends JsonResource
             'title' => $this->title,
             'subtitle' =>  $this->subtitle,
             'rating' => $this->rating,
-            'url'=> Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $this->url)->encode('data-url', 50)->encoded,
+            'url'=> Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $this->url)->encode('data-url')->encoded,
             'in_history' => (bool) $this->in_history,
             'history_id' =>  $this->history_id,
             'status' => (bool) $this->status_id

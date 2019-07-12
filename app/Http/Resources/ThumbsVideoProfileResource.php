@@ -2,12 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 use Intervention\Image\Facades\Image;
 
-class IndexVideoResource extends JsonResource
+class ThumbsVideoProfileResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,22 +20,22 @@ class IndexVideoResource extends JsonResource
         $pureName = substr($this->url, 0,  $str-4);
         $patch = storage_path('app/public/') . $this->user_uid . '/videos/' . $pureName . '.png';
         if (file_exists(storage_path('app/public/') . $this->user_uid . '/videos/' . $pureName . '.png')) {
-            $thumbs  = Image::make($patch )->encode('data-url', 50)->encoded;
+            $thumbs  = Image::make($patch )->resize(200, 150)->encode('data-url', 50)->encoded;
         } else {
             $patch = storage_path('app/public/') . '/social/video_aux.png';
-            $thumbs  = Image::make($patch )->encode('data-url', 50)->encoded;
+            $thumbs  = Image::make($patch )->resize(200, 150)->encode('data-url', 50)->encoded;
         }
         return [
-            'cron' => Carbon::now()->timestamp + $this->id,
-            'user' => new UserSearch(User::query()->find($this->uid)),
             'id' => $this->id,
-            'moment' => (int) Carbon::parse($this->moment)->timestamp,
+            'moment' => Carbon::parse($this->moment)->format('d-m-Y H:i'),
             'time_ago' => Carbon::parse($this->moment)->diffForHumans(),
             'title' => $this->title,
             'subtitle' =>  $this->subtitle,
             'rating' => $this->rating,
             'thumbs' => $thumbs,
-            'type' => 2, // VIDEO
+            'status' => (bool) $this->status_id,
+            'in_history' => (bool) $this->in_history,
+            'history_id' =>  $this->history_id,
         ];
     }
 }

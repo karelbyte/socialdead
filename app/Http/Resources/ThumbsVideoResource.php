@@ -2,12 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Intervention\Image\Facades\Image;
 
-class IndexVideoResource extends JsonResource
+class ThumbsVideoResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -27,16 +25,8 @@ class IndexVideoResource extends JsonResource
             $thumbs  = Image::make($patch )->encode('data-url', 50)->encoded;
         }
         return [
-            'cron' => Carbon::now()->timestamp + $this->id,
-            'user' => new UserSearch(User::query()->find($this->uid)),
             'id' => $this->id,
-            'moment' => (int) Carbon::parse($this->moment)->timestamp,
-            'time_ago' => Carbon::parse($this->moment)->diffForHumans(),
-            'title' => $this->title,
-            'subtitle' =>  $this->subtitle,
-            'rating' => $this->rating,
             'thumbs' => $thumbs,
-            'type' => 2, // VIDEO
         ];
     }
 }

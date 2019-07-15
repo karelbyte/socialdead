@@ -97,5 +97,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('send-message-file', 'ChatsController@setMessage_file');
     });
 
+
+    Route::prefix('tree')->group(function () {
+        Route::post('family', 'TreeController@getTree');
+    });
+
 });
 

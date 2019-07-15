@@ -14,7 +14,7 @@ class Contact extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'uid');
+        return $this->belongsTo(User::class, 'user_uid', 'uid');
     }
 
     public function contact()

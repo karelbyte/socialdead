@@ -78,7 +78,9 @@ class IndexController extends Controller
             $data->push(new IndexVideoResource($video));
         }
 
-        $sorted =$data->sortByDesc('moment');
+        // ORGANIZANDO
+        $sorted = $data->sortByDesc('moment');
+
         return $sorted->values()->all();
     }
 }

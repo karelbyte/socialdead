@@ -49,6 +49,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('settings', 'NotificationsController@getSettings');
     });
 
+    Route::prefix('constable')->group(function () {
+        Route::post('confirm', 'ConstableController@setConfirm');
+    });
+
     Route::prefix('contacts')->group(function () {
         Route::post('list', 'ContactsController@getContactsOnline');
         Route::post('list-all', 'ContactsController@getContactsAll');

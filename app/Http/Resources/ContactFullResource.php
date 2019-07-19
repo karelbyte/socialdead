@@ -29,6 +29,7 @@ class ContactFullResource extends JsonResource
             'kin' => $this->kin,
             'avatar' => $avatar->encoded,
             'constable' => (bool) $this->constable,
+            'is_constable' =>  $this->constable === 2 ?  (bool) $this->constable : false,
             'who_you_are' => substr($this->who_you_are, 0, 120) . '...',
             'occupation' => $this->occupation,
         ];

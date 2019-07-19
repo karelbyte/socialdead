@@ -68,7 +68,6 @@ class NotificationsController extends Controller
         return http_response_code(200);
     }
 
-
     public function getSettings(Request $request) {
         return new NotifySettings($request->user()->settingNotifications);
     }

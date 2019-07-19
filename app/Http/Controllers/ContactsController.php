@@ -40,8 +40,10 @@ class ContactsController extends Controller
             ->where('contact_user_uid', $request->uid)
             ->update([
               'type_id' => $request->type,
-              'kin_id' => $request->kin
+              'kin_id' => $request->kin,
+              'constable' => $request->constable
             ]);
+
         return http_response_code(200);
     }
 
@@ -63,7 +65,7 @@ class ContactsController extends Controller
            broadcast(new UpdateUserStatusEvent($request->user()->uid))->toOthers();
         }
         $notification->update(['status_id' =>  2]);  // LEIDO
-        return http_response_code(200); //  $notification;
+        return http_response_code(200);
     }
 
     function allKins () {

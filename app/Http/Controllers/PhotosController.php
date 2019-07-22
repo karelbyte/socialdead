@@ -6,6 +6,7 @@ use App\Http\Resources\PhotoResource;
 use App\Models\History;
 use App\Models\HistoryDetails;
 use App\Models\Photo;
+use App\Models\PhotoShare;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -52,6 +53,18 @@ class PhotosController extends Controller
     public function destroyPhoto($id) {
         $photo = Photo::query()->find($id);
         $photo->photoEraser();
+        return http_response_code(200);
+    }
+
+    public function sharePhoto(Request $request) {
+        foreach ($request->sharelist as $userUid ) {
+            PhotoShare::query()->create([
+                'photo_id' => $request->item_id,
+                'to_user' => $userUid,
+                'from_user' =>  $request->user()->uid,
+                'moment' => Carbon::now()
+            ]);
+        }
         return http_response_code(200);
     }
 

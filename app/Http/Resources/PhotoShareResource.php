@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
-class IndexPhotoResource extends JsonResource
+class PhotoShareResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,19 +18,20 @@ class IndexPhotoResource extends JsonResource
      */
     public function toArray($request)
     {
-//getSubTitle(wall.user.label, wall.type, wall.time_ago)
-        $user = User::query()->find($this->user_uid);
+
+        $user = User::query()->find( $this->from_user);
+
         return [
+            'id' => $this->id,
             'cron' => Str::uuid(),
             'user' => new UserSearch($user),
-            'id' => $this->id,
-            'moment' => (int) Carbon::parse($this->moment)->timestamp,
+            'url'=> Image::make(storage_path('app/public/') . $this->from_user . '/photos/' . $this->photo->url)->resize(150, 150)->encode('data-url', 50)->encoded,
+            'moment' => Carbon::parse($this->moment)->format('d-m-Y H:i'),
             'time_ago' => Carbon::parse($this->moment)->diffForHumans(),
-            'title' => $this->title,
-            'subtitle' => $user->full_names . ' publico esta  imagen  '. Carbon::parse($this->moment)->diffForHumans(),
-            'rating' => $this->rating,
+            'title' => $this->photo->title,
+            'subtitle' => $user->full_names . ' te compartio esta  imagen  '. Carbon::parse($this->moment)->diffForHumans(),
+            'rating' => $this->photo->rating,
             'type' => 1, // IMAGENES
-            'url'=> Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $this->url)->encode('data-url', 50)->encoded,
         ];
     }
 }

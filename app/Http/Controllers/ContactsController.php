@@ -17,6 +17,7 @@ class ContactsController extends Controller
         $data = Contact::query()->join('users', 'users.uid','contacts.contact_user_uid')
             ->where('contacts.user_uid', $request->user()->uid)
             ->wherein('users.status_id', [1, 2])
+            ->orderBy('users.status_id')
             ->get();
 
         return response()->json(ContactResource::collection($data));
@@ -28,13 +29,13 @@ class ContactsController extends Controller
             ->where('contacts.user_uid', $request->user()->uid)
             ->select('users.full_names', 'users.occupation', 'users.avatar',  'users.who_you_are', 'users.birthdate',
                 'users.status_id as status_user', 'contacts.*')
+            ->orderBy('users.status_id')
             ->get();
 
         return  response()->json(ContactFullResource::collection($data));
     }
 
     public function setContactsUpdate(Request $request) {
-
         Contact::query()
             ->where('user_uid', $request->user()->uid)
             ->where('contact_user_uid', $request->uid)
@@ -43,7 +44,6 @@ class ContactsController extends Controller
               'kin_id' => $request->kin,
               'constable' => $request->constable
             ]);
-
         return http_response_code(200);
     }
 
@@ -65,6 +65,14 @@ class ContactsController extends Controller
            broadcast(new UpdateUserStatusEvent($request->user()->uid))->toOthers();
         }
         $notification->update(['status_id' =>  2]);  // LEIDO
+        return http_response_code(200);
+    }
+
+    public function contactDelete(Request $request) {
+        Contact::query()
+            ->where('user_uid', $request->user()->uid)
+            ->where('contact_user_uid', $request->uid)
+            ->delete();
         return http_response_code(200);
     }
 

@@ -41,10 +41,10 @@ class FamilyResource extends JsonResource
                 $col = 0;
                 break;
             case 13; // HIJO
-                $col = 3;
+                $col = 4;
                 break;
             case 14; // HIJA
-                $col = 3;
+                $col = 4;
                 break;
             case 7; // HERMANO
                 $col = 3;

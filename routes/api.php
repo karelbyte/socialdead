@@ -59,6 +59,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('confirm', 'ContactsController@setConfirmContact');
         Route::get('list-kins', 'ContactsController@allKins');
         Route::post('update', 'ContactsController@setContactsUpdate');
+        Route::post('kill', 'ContactsController@contactDelete');
     });
 
     Route::prefix('profile')->group(function () {
@@ -84,6 +85,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('photo/{id}', 'PhotosController@getPhoto');
         Route::post('update', 'PhotosController@updatePhoto');
         Route::post('to-history', 'PhotosController@toHistory');
+        Route::post('share', 'PhotosController@sharePhoto');
     });
 
     Route::prefix('videos')->group(function () {
@@ -93,6 +95,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('video/{id}', 'VideosController@getVideo');
         Route::post('update', 'VideosController@updateVideo');
         Route::post('to-history', 'VideosController@toHistory');
+        Route::post('share', 'VideosController@shareVideo');
     });
 
     Route::prefix('chats')->group(function () {

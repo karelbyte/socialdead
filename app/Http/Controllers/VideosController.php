@@ -9,6 +9,7 @@ use App\Http\Resources\VideoResource;
 use App\Models\History;
 use App\Models\HistoryDetails;
 use App\Models\Video;
+use App\Models\VideoShare;
 use Carbon\Carbon;
 use FFMpeg;
 use FFMpeg\Format\Video\X264;
@@ -112,5 +113,18 @@ class VideosController extends Controller
 
         return http_response_code(200);
 
+    }
+
+
+    public function shareVideo(Request $request) {
+        foreach ($request->sharelist as $userUid ) {
+            VideoShare::query()->create([
+                'video_id' => $request->item_id,
+                'to_user' => $userUid,
+                'from_user' =>  $request->user()->uid,
+                'moment' => Carbon::now()
+            ]);
+        }
+        return http_response_code(200);
     }
 }

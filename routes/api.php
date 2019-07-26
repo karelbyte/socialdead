@@ -98,10 +98,31 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('share', 'VideosController@shareVideo');
     });
 
+    Route::prefix('audios')->group(function () {
+        Route::get('lists', 'AudiosController@getVideoLists');
+        Route::post('save', 'AudiosController@saveAudio');
+        Route::delete('delete/{id}', 'AudiosController@destroyAudio');
+        Route::get('audio/{id}', 'AudiosController@getAudio');
+        Route::post('update', 'AudiosController@updateAudio');
+        Route::post('to-history', 'AudiosController@toHistory');
+        Route::post('share', 'AudiosController@shareAudio');
+    });
+
+    Route::prefix('medias')->group(function () {
+        Route::get('lists', 'MediasController@getLists');
+    });
+
     Route::prefix('chats')->group(function () {
         Route::post('messages', 'ChatsController@getMessages');
         Route::post('send-message', 'ChatsController@setMessage');
         Route::post('send-message-file', 'ChatsController@setMessage_file');
+    });
+
+    Route::prefix('reminders')->group(function () {
+        Route::post('lists', 'RemindersController@getList');
+        Route::post('kill', 'RemindersController@ReminderDelete');
+        Route::post('save', 'RemindersController@saveReminder');
+        Route::post('update', 'RemindersController@updateReminder');
     });
 
 

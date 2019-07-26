@@ -7,7 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
-class ThumbsVideoProfileResource extends JsonResource
+class ThumbsAudioResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,15 +17,8 @@ class ThumbsVideoProfileResource extends JsonResource
      */
     public function toArray($request)
     {
-        $str = strlen($this->url);
-        $pureName = substr($this->url, 0,  $str-4);
-        $patch = storage_path('app/public/') . $this->user_uid . '/videos/' . $pureName . '.png';
-        if (file_exists(storage_path('app/public/') . $this->user_uid . '/videos/' . $pureName . '.png')) {
-            $thumbs  = Image::make($patch )->resize(200, 150)->encode('data-url', 50)->encoded;
-        } else {
-            $patch = storage_path('app/public/') . '/social/video_aux.png';
-            $thumbs  = Image::make($patch )->resize(200, 150)->encode('data-url', 50)->encoded;
-        }
+        $patch = storage_path('app/public/') . '/social/audio_aux.jpg';
+        $thumbs  = Image::make($patch )->resize(200, 150)->encode('data-url', 50)->encoded;
         return [
             'id' => $this->id,
             'cron' => Str::uuid(),
@@ -38,7 +31,7 @@ class ThumbsVideoProfileResource extends JsonResource
             'status' => (bool) $this->status_id,
             'in_history' => (bool) $this->in_history,
             'history_id' =>  $this->history_id,
-            'type' => 1
+            'type' => 2
         ];
     }
 }

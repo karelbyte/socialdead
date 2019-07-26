@@ -108,9 +108,5 @@ class IndexController extends Controller
             $data->push(new VideoShareResource($video_share));
         }
 
-        // ORGANIZANDO
-        $sorted = $data->sortByDesc('moment');
-
-        return $sorted->values()->all();
     }
 }

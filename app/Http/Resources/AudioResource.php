@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use FFMpeg\FFMpeg;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AudioResource extends JsonResource
@@ -16,10 +17,11 @@ class AudioResource extends JsonResource
     {
         $file = storage_path('app/public/') . $this->user_uid . '/audios/' . $this->url;
         $data = base64_encode(file_get_contents($file));
-        $src = 'data: '. mime_content_type($file).';base64,'.$data;
+        $mine1 = mime_content_type($file);
+        $src = 'data:'. $mine1 .';base64,'.$data;
         return [
             'id' => $this->id,
-            'url'=> $src,
+            'url'=> $src
         ];
     }
 }

@@ -38,4 +38,9 @@ class HistoryDetails extends Model
     {
         return $this->belongsTo(Video::class, 'item', 'id');
     }
+
+    public function audio()
+    {
+        return $this->belongsTo(Audio::class, 'item', 'id');
+    }
 }

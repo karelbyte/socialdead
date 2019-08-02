@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AudioResource;
+use App\Http\Resources\AudioShareResource;
 use App\Http\Resources\ContactResource;
+use App\Http\Resources\IndexAudioResource;
 use App\Http\Resources\IndexPhotoResource;
 use App\Http\Resources\IndexVideoResource;
 use App\Http\Resources\PhotoResource;
@@ -12,6 +15,7 @@ use App\Http\Resources\ThumbsVideoResource;
 use App\Http\Resources\UserProfileGeneral;
 use App\Http\Resources\VideoResource;
 use App\Http\Resources\VideoShareResource;
+use App\Models\AudioShare;
 use App\Models\Contact;
 use App\Models\Photo;
 use App\Models\PhotoShare;
@@ -24,7 +28,7 @@ class IndexController extends Controller
 {
 
     function getProfileData (Request $request) {
-        $Hobb= $request->user()->Hobbies;
+        $Hobb = $request->user()->Hobbies;
         if ( $Hobb === null) {
             $Hobb = [
                 'hobby' => '',
@@ -62,10 +66,10 @@ class IndexController extends Controller
 
         $data = new Collection();
 
-        // FOTOS Y VIDEOS PUBLICADOS POR TUS CONTACTOS
-        $photos = Contact::query()->leftJoin('photos', 'contacts.contact_user_uid', 'photos.user_uid')
+        // FOTOS, VIDEOS, AUDIOS PUBLICADOS POR TUS CONTACTOS
+       $photos = Contact::query()->leftJoin('photos', 'contacts.contact_user_uid', 'photos.user_uid')
             ->where('contacts.user_uid', $request->user()->uid)
-            ->whereRaw('datediff(now(), photos.moment) <=10')
+            ->whereRaw('datediff(now(), photos.moment) <= 10')
             ->select( 'contacts.contact_user_uid as uid', 'photos.*')
             ->orderBy( 'photos.moment', 'desc')
             ->get();
@@ -75,13 +79,25 @@ class IndexController extends Controller
 
         $videos = Contact::query()->leftJoin('videos', 'contacts.contact_user_uid', 'videos.user_uid')
             ->where('contacts.user_uid', $request->user()->uid)
-            ->whereRaw('datediff(now(), videos.moment) <=10')
+            ->whereRaw('datediff(now(), videos.moment) <= 10')
             ->select( 'contacts.contact_user_uid as uid', 'videos.*')
             ->orderBy( 'videos.moment', 'desc')
             ->get();
 
         foreach ($videos as $video) {
             $data->push(new IndexVideoResource($video));
+        }
+
+        $audios = Contact::query()->leftJoin('audios', 'contacts.contact_user_uid', 'audios.user_uid')
+            ->where('contacts.user_uid', $request->user()->uid)
+            ->whereRaw('datediff(now(), audios.moment) <= 10')
+            ->select( 'contacts.contact_user_uid as uid', 'audios.*')
+            ->orderBy( 'audios.moment', 'desc')
+            ->get();
+
+
+        foreach ($audios as $audio) {
+            $data->push(new IndexAudioResource($audio));
         }
 
         // FOTOS Y VIDEOS COMPARTIDOS PARA TI POR TUS CONTACTOS
@@ -108,5 +124,21 @@ class IndexController extends Controller
             $data->push(new VideoShareResource($video_share));
         }
 
+        $audios_share = AudioShare::query()->with('user', 'audio')
+          ->where('to_user', $request->user()->uid)
+          ->whereRaw('datediff(now(), audios_shares.moment) <= 3')
+          ->select( '*')
+          ->orderBy( 'audios_shares.moment', 'desc')
+          ->get();
+        //return $audios_share;
+
+        foreach ($audios_share as $audio_share) {
+            $data->push(new AudioShareResource($audio_share));
+        }
+
+        // ORGANIZANDO
+        $sorted = $data->sortByDesc('moment');
+
+        return $sorted->values()->all();
     }
 }

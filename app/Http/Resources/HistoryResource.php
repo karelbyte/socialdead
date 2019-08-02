@@ -31,6 +31,10 @@ class HistoryResource extends JsonResource
             $icon = 'fab fa-battle-net';
             $color= 'black';
         }
+        if  ($this->type === 5)  {
+            $icon = 'fa fa-microphone';
+            $color= 'primary';
+        }
         return [
             'id' => $this->id,
             'color' => $color,

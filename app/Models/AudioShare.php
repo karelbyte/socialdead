@@ -11,7 +11,7 @@ class AudioShare extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'video_id',
+        'audio_id',
         'to_user',
         'from_user',
         'moment'

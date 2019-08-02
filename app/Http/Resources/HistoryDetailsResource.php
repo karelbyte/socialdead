@@ -16,7 +16,7 @@ class HistoryDetailsResource extends JsonResource
     {
         if  ($this->type === 1) { $item = new PhotoResource($this->photo);}
         if  ($this->type === 2) { $item = new VideoResource($this->video);}
-        if  ($this->type === 3) { $item = $this->note;}
+        if  ($this->type === 3) {  $item = new AudioResource($this->audio);}
 
         return [
             'id' => $this->id,

@@ -10,10 +10,10 @@ class RemindersController extends Controller
 {
     public function getList(Request $request) {
 
-        $data = Reminder::query()
+        $data = Reminder::query()->with('audios', 'medias')
             ->where('user_uid', $request->user()->uid)
             ->get();
-
+         //  return    $data;
         return ReminderResource::collection($data);
     }
 
@@ -25,20 +25,35 @@ class RemindersController extends Controller
     }
 
     public function saveReminder(Request $request) {
-        Reminder::query()
+        $item = $request->item;
+        $reminder = Reminder::query()
             ->create([
                 'user_uid' => $request->user()->uid,
-                'moment' => $request->moment,
-                'title' => $request->title,
-                'subtitle' => $request->subtitle,
-                'note' => $request->note,
+                'moment' => $item['moment'],
+                'title' => $item['title'],
+                'subtitle' => $item['subtitle'],
+                'note' => $item['note'],
                 'type' => 1,
-                'item_id' => $request->item_id,
-                'recurrent' => $request->recurrent
+           //     'item_id' => $request->item_id,
+                'recurrent' => $item['recurrent']
             ]);
+        foreach ($request->images as $image) {
+            $reminder->details()->create([
+                'type' => 3, //FOTOS
+                'item_id' => $image
+            ]);
+        }
+
+        foreach ($request->medias as $media) {
+            $reminder->details()->create([
+                'type' => $media['type'],
+                'item_id' => $media['id']
+            ]);
+        }
 
         $data = Reminder::query()
             ->where('user_uid', $request->user()->uid)
+            ->orderBy('moment', 'desc')
             ->get();
 
         return  ReminderResource::collection($data);

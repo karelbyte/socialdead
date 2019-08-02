@@ -38,5 +38,30 @@ class Reminder extends Model
         return $this->belongsTo('App\User', 'user_uid', 'uid');
     }
 
+    public function details()
+    {
+        return $this->hasMany(ReminderDetail::class, 'reminder_id', 'id');
+    }
+
+    public function photos()
+    {
+        return $this->hasMany(ReminderDetail::class, 'reminder_id', 'id')->where('type', 3);
+    }
+
+    public function videos()
+    {
+        return $this->hasMany(ReminderDetail::class, 'reminder_id', 'id')->where('type', 1);
+    }
+
+    public function audios()
+    {
+        return $this->hasMany(ReminderDetail::class, 'reminder_id', 'id')->where('type', 2);
+    }
+
+    public function medias()
+    {
+        return $this->hasMany(ReminderDetail::class, 'reminder_id', 'id')->whereIn('type', [1, 2]);
+    }
+
     public $timestamps = false;
 }

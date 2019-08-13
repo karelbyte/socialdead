@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
-class ChatResource extends JsonResource
+class ChatListResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -30,11 +30,11 @@ class ChatResource extends JsonResource
                 ]
              ];
         }
-       // $author = $this->user_uid === Auth::user()->uid ? 'me' :  $this->user_uid;
+        $author = $this->user_uid === Auth::user()->uid ? 'me' :  $this->user_uid;
          return [
             'id' => $this->id,
             'type' => $this->type,
-            'author' => $this->user_uid,
+            'author' => $author,
             'data' => $da,
             'status_id' =>  $this->status_id,
             'moment' => Carbon::parse($this->created_at)->diffForHumans(),

@@ -15,7 +15,7 @@ class AudioResource extends JsonResource
      */
     public function toArray($request)
     {
-        $file = storage_path('app/public/') . $this->user_uid . '/audios/' . $this->url;
+        $file = storage_path('app/public/') . $this->user->uid . '/audios/' . $this->url;
         $data = base64_encode(file_get_contents($file));
         $mine1 = mime_content_type($file);
         $src = 'data:'. $mine1 .';base64,'.$data;

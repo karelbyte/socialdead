@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ReminderResource;
 use App\Models\Reminder;
+use App\Models\ReminderShare;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class RemindersController extends Controller
@@ -29,7 +31,7 @@ class RemindersController extends Controller
         $reminder = Reminder::query()
             ->create([
                 'user_uid' => $request->user()->uid,
-                'moment' => $item['moment'],
+                'moment' =>Carbon::parse($item['moment']),
                 'title' => $item['title'],
                 'subtitle' => $item['subtitle'],
                 'note' => $item['note'],
@@ -60,21 +62,54 @@ class RemindersController extends Controller
     }
 
     public function updateReminder(Request $request) {
-        Reminder::query()->where('id', $request->id)
+
+        $item = $request->item;
+        Reminder::query()->where('id', $item['id'])
             ->update([
-                'moment' => $request->moment,
-                'title' => $request->title,
-                'subtitle' => $request->subtitle,
-                'note' => $request->note,
-                'type' => 1,
-                'item_id' => $request->item_id,
-                'recurrent' => $request->recurrent
+                'moment' => $item['moment'],
+                'title' => $item['title'],
+                'subtitle' => $item['subtitle'],
+                'note' => $item['note'],
+                'recurrent' => $item['recurrent']
             ]);
+
+
+        $reminder = Reminder::query()->find($item['id']);
+
+        if ($reminder->details !== null) {
+            $reminder->details()->delete();
+        }
+
+        foreach ($request->images as $image) {
+            $reminder->details()->create([
+                'type' => 3, //FOTOS
+                'item_id' => $image
+            ]);
+        }
+
+        foreach ($request->medias as $media) {
+            $reminder->details()->create([
+                'type' => $media['type'],
+                'item_id' => $media['id']
+            ]);
+        }
 
         $data = Reminder::query()
             ->where('user_uid', $request->user()->uid)
+            ->orderBy('moment', 'desc')
             ->get();
 
         return  ReminderResource::collection($data);
+    }
+
+    public function shareReminder(Request $request) {
+        foreach ($request->sharelist as $userUid ) {
+            ReminderShare::query()->create([
+                'reminder_id' => $request->item_id,
+                'to_user' => $userUid,
+                'from_user' =>  $request->user()->uid,
+            ]);
+        }
+        return http_response_code(200);
     }
 }

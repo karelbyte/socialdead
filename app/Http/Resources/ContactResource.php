@@ -25,7 +25,10 @@ class ContactResource extends JsonResource
             'full_names' => (string) $this->full_names,
             'online'  => $this->status_id,
             'type' =>  $this->type_id,
-            'avatar' => $avatar->encoded
+            'avatar' => $avatar->encoded,
+            'bell' => false,
+            'occupation' => $this->occupation,
+            'country' => $this->country,
         ];
     }
 }

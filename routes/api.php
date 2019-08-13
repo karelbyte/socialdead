@@ -123,6 +123,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('kill', 'RemindersController@ReminderDelete');
         Route::post('save', 'RemindersController@saveReminder');
         Route::post('update', 'RemindersController@updateReminder');
+        Route::post('share', 'RemindersController@shareReminder');
     });
 
 

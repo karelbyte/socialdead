@@ -70,7 +70,14 @@ class UsersController extends Controller
 
         $data['secret'] = Str::random(30);
 
-        $user = User::query()->create($data);
+        $user = User::query()->create([
+            'birthdate' => Carbon::parse($data['birthdate'])->format('Y-m-d'),
+            'email' =>  $data['email'],
+            'full_names' => $data['full_names'],
+            'password' => $data['password'],
+            'sex_id' => $data['sex_id'],
+            'secret' => $data['secret']
+        ]);
 
         $user->settingNotifications()->create(['notification_sound' => 1]);
 

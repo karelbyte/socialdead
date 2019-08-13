@@ -18,7 +18,6 @@ class IndexPhotoResource extends JsonResource
      */
     public function toArray($request)
     {
-//getSubTitle(wall.user.label, wall.type, wall.time_ago)
         $user = User::query()->find($this->user_uid);
         return [
             'cron' => Str::uuid(),

@@ -24,7 +24,8 @@ class UserOnly extends JsonResource
          'moment_emit' => Carbon::now()->timestamp,
          'avatar' => $avatar->encoded,
          'occupation' => $this->occupation,
-         'notifications' => new NotifySettings($this->settingNotifications)
+         'notifications' => new NotifySettings($this->settingNotifications),
+         'zodiac' => $this->symbol($this->birthdate)
        ];
     }
 }

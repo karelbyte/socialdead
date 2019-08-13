@@ -29,7 +29,10 @@ class ReminderResource extends JsonResource
                $item = $this->medias->first();
                if ((int) $item['type'] === 1) {
                    $video = Video::query()->find($item['item_id']);
-                   $thumbs = Image::make(storage_path('app/public/') . $this->user_uid . '/videos/' . $video->url)->resize(150, 150)->encode('data-url', 50)->encoded;
+                   $str = strlen($video->url);
+                   $pureName = substr($video->url, 0,  $str-4);
+                   $patch = storage_path('app/public/') . $this->user_uid . '/videos/' . $pureName . '.png';
+                   $thumbs = Image::make($patch)->resize(150, 150)->encode('data-url', 50)->encoded;
                } else {
                    $patch = storage_path('app/public/') . '/social/audio_aux.jpg';
                    $thumbs  = Image::make($patch )->resize(200, 150)->encode('data-url', 50)->encoded;
@@ -38,7 +41,8 @@ class ReminderResource extends JsonResource
        }
         return [
             'id' => $this->id,
-            'moment' => Carbon::parse($this->moment)->format('d-m-Y H:i'),
+            'moment' => Carbon::parse($this->moment)->format('d-m-Y'),
+            'moment2' => Carbon::parse($this->moment)->format('d-m-Y'),
             'time_ago' => Carbon::parse($this->moment)->diffForHumans(),
             'title' => $this->title,
             'subtitle' =>  $this->subtitle,

@@ -16,6 +16,7 @@ class PhotoResource extends JsonResource
      */
     public function toArray($request)
     {
+        $img = Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $this->url);
         return [
             'id' => $this->id,
             'moment' => Carbon::parse($this->moment)->format('d-m-Y H:i'),
@@ -23,7 +24,9 @@ class PhotoResource extends JsonResource
             'title' => $this->title,
             'subtitle' =>  $this->subtitle,
             'rating' => $this->rating,
-            'url'=> Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $this->url)->encode('data-url')->encoded,
+            'url'=> $img->encode('data-url')->encoded,
+            'H' => $img->height(),
+            'W' => $img->width(),
             'in_history' => (bool) $this->in_history,
             'history_id' =>  $this->history_id,
             'status' => (bool) $this->status_id

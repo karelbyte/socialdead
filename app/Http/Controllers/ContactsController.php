@@ -31,7 +31,6 @@ class ContactsController extends Controller
                 'users.status_id as status_user', 'contacts.*')
             ->orderBy('users.status_id')
             ->get();
-
         return  response()->json(ContactFullResource::collection($data));
     }
 

@@ -26,18 +26,19 @@ class RemindersController extends Controller
         return http_response_code(200);
     }
 
+
     public function saveReminder(Request $request) {
         $item = $request->item;
         $reminder = Reminder::query()
             ->create([
                 'user_uid' => $request->user()->uid,
-                'moment' =>Carbon::parse($item['moment']),
+                'moment' => Carbon::parse($item['moment']),
                 'title' => $item['title'],
                 'subtitle' => $item['subtitle'],
                 'note' => $item['note'],
                 'type' => 1,
-           //     'item_id' => $request->item_id,
-                'recurrent' => $item['recurrent']
+                'clone' => $item['recurrent'],
+                'recurrent' => $item['extend']
             ]);
         foreach ($request->images as $image) {
             $reminder->details()->create([
@@ -66,7 +67,7 @@ class RemindersController extends Controller
         $item = $request->item;
         Reminder::query()->where('id', $item['id'])
             ->update([
-                'moment' => $item['moment'],
+                'moment' => Carbon::parse($item['moment']),
                 'title' => $item['title'],
                 'subtitle' => $item['subtitle'],
                 'note' => $item['note'],
@@ -102,6 +103,14 @@ class RemindersController extends Controller
         return  ReminderResource::collection($data);
     }
 
+    public function saveShareUser ($uidUser, $idReminder) {
+         $reminder = Reminder::query()->find($idReminder);
+         $extendReminder = $reminder->replicate();
+         $extendReminder->user_uid = $uidUser;
+         $extendReminder->extend = false;
+         $extendReminder->save();
+         $extendReminder->details()->attach($reminder->details);
+    }
     public function shareReminder(Request $request) {
         foreach ($request->sharelist as $userUid ) {
             ReminderShare::query()->create([
@@ -109,6 +118,9 @@ class RemindersController extends Controller
                 'to_user' => $userUid,
                 'from_user' =>  $request->user()->uid,
             ]);
+            if  ($request->extend) {
+                $this->saveShareUser($userUid, $request->item_id);
+            }
         }
         return http_response_code(200);
     }

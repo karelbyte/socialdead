@@ -48,6 +48,7 @@ class ReminderResource extends JsonResource
             'subtitle' =>  $this->subtitle,
             'note' => $this->note,
             'recurrent' => (bool) $this->recurrent,
+            'extend' => (bool) $this->extend,
             'images' => $this->photos()->pluck('item_id'),
             'medias' => $this->medias->map(function ($itm) {
                 return [

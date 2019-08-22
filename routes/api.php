@@ -124,6 +124,8 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('save', 'RemindersController@saveReminder');
         Route::post('update', 'RemindersController@updateReminder');
         Route::post('share', 'RemindersController@shareReminder');
+        Route::post('accept', 'RemindersController@AcceptReminder');
+        Route::post('off-noty', 'RemindersController@OffNotyReminder');
     });
 
 

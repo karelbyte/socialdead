@@ -20,6 +20,7 @@ class CreateRemindersSharesTable extends Migration
             $table->bigInteger('reminder_id')->unsigned();
             $table->foreign('reminder_id')->references('id')->on('reminder')->onDelete('cascade');
             $table->dateTime('moment');
+            $table->tinyInteger('extend')->unsigned();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';

@@ -30,7 +30,7 @@ class ReminderShare extends Model
     /**
      * @var array
      */
-    protected $fillable = ['reminder_id', 'from_user', 'to_user'];
+    protected $fillable = ['reminder_id', 'from_user', 'to_user', 'extend'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

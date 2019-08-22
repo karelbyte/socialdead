@@ -58,7 +58,6 @@ class NotificationsController extends Controller
             ];
             Mail::to($data->touser->email)->send(new UserNotification($data_email));
         }
-
         broadcast(new NotificationEvent($request->uid, new Notify($data)))->toOthers();
         return response()->json('Se envió la notificación!');
     }

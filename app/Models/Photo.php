@@ -22,6 +22,7 @@ class Photo extends Model
     public function photoEraser():void {
        $patch = $this->user_uid .'/photos/'.$this->url;
        Storage::disk('public')->delete($patch);
+       History::query()->where('id', $this->history_id)->delete();
        $this->delete();
     }
 

@@ -24,6 +24,7 @@ class Audio extends Model
     public function audioEraser():void {
        $patch = $this->user_uid .'/audios/'.$this->url;
        Storage::disk('public')->delete($patch);
+       History::query()->where('id', $this->history_id)->delete();
        $this->delete();
     }
 

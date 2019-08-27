@@ -34,13 +34,11 @@ class AudiosController extends Controller
             $name = Carbon::now()->timestamp . '.' . $ext;
             $str = strlen($name);
             $pureName = substr($name, 0,  $str-4);
-            if ( $ext === 'MP3' || $ext === 'M4A' ) {
+            if ( $ext === 'MP3' || $ext === 'M4A' ||   $ext === 'AMR') {
                 $patch = storage_path('app/public/') . $uid .'/audios';
                 File::exists( $patch) or File::makeDirectory($patch , 0777, true, true);
                 $request->file->storeAs('public/'.$uid .'/audios/', $name);
-
-
-                if ($ext === 'M4A') {
+                if ($ext !== 'MP3' ) {
                     \FFMpeg::fromDisk('public')
                         ->open($uid .'/audios/' . $name)
                         ->export()
@@ -51,7 +49,6 @@ class AudiosController extends Controller
                     Storage::disk('public')->delete($patch);
                     $name =  $pureName . '.mp3';
                 }
-
                 Audio::query()->create([
                     'user_uid' => $uid,
                     'moment' => Carbon::now(),

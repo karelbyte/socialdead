@@ -27,7 +27,8 @@ class Notify extends JsonResource
             'avatar' => $avatar->encoded,
             'note_short' => strlen($this->note) > 20 ?  substr($this->note, 0, 20) . '...' : $this->note,
             'note'=> $this->note,
-            'type' => $this->type_id
+            'type' => $this->type_id,
+            'data' => $this->data
         ];
     }
 }

@@ -1,8 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use mysql_xdevapi\Collection;
 
 /**
  * @property integer $id
@@ -26,9 +28,15 @@ class SubReminder extends Model
     /**
      * @var array
      */
-    protected $fillable = ['user_uid', 'to_user_uid', 'to_user_email', 'token', 'note', 'moment', 'status_id'];
+    protected $fillable = ['user_uid', 'to_user_email', 'to_user_email_cc', 'to_user_email_cc', 'token', 'note', 'moment', 'status_id'];
 
     protected $table = 'sub_reminders';
+
+
+    public function UserOwner()
+    {
+        return $this->belongsTo(User::class, 'user_uid', 'uid');
+    }
 
     public $timestamps = false;
 }

@@ -18,6 +18,8 @@ Route::middleware('auth:api')->get('/users', function (Request $request) {
 });
 
 Route::post('user-create', 'UsersController@store');
+Route::post('user-recovery-token', 'UsersController@recoveryToke');
+Route::post('user-password-set', 'UsersController@updatePasswordRecovery');
 
 Route::middleware(['auth:api'])->group(function () {
 
@@ -126,6 +128,9 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('share', 'RemindersController@shareReminder');
         Route::post('accept', 'RemindersController@AcceptReminder');
         Route::post('off-noty', 'RemindersController@OffNotyReminder');
+        Route::post('sub-save', 'RemindersController@saveSubReminder');
+        Route::post('get-sub', 'RemindersController@getSubReminder');
+        Route::post('up-sub', 'RemindersController@UpdateSubReminderFromSD');
     });
 
 

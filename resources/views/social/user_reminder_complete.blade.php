@@ -13,6 +13,47 @@
     <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet" type="text/css">
     <!--<![endif]-->
     <style type="text/css">
+        .myButton {
+            -moz-box-shadow:inset 0px 1px 3px 0px #91b8b3;
+            -webkit-box-shadow:inset 0px 1px 3px 0px #91b8b3;
+            box-shadow:inset 0px 1px 3px 0px #91b8b3;
+            background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #37423E), color-stop(1, #6c7c7c));
+            background:-moz-linear-gradient(top, #768d87 5%, #6c7c7c 100%);
+            background:-webkit-linear-gradient(top, #768d87 5%, #6c7c7c 100%);
+            background:-o-linear-gradient(top, #768d87 5%, #6c7c7c 100%);
+            background:-ms-linear-gradient(top, #768d87 5%, #6c7c7c 100%);
+            background:linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#768d87', endColorstr='#6c7c7c',GradientType=0);
+            background-color:#768d87;
+            -moz-border-radius:5px;
+            -webkit-border-radius:5px;
+            border-radius:5px;
+            border:1px solid #566963;
+            display:inline-block;
+            cursor:pointer;
+            color:#ffffff;
+            font-family:Arial;
+            font-size:15px;
+            font-weight:bold;
+            padding:11px 23px;
+            text-decoration:none;
+            text-shadow:0px -1px 0px #2b665e;
+        }
+        .myButton:hover {
+            background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #6c7c7c), color-stop(1, #768d87));
+            background:-moz-linear-gradient(top, #6c7c7c 5%, #768d87 100%);
+            background:-webkit-linear-gradient(top, #6c7c7c 5%, #768d87 100%);
+            background:-o-linear-gradient(top, #6c7c7c 5%, #768d87 100%);
+            background:-ms-linear-gradient(top, #6c7c7c 5%, #768d87 100%);
+            background:linear-gradient(to bottom, #6c7c7c 5%, #768d87 100%);
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#6c7c7c', endColorstr='#768d87',GradientType=0);
+            background-color:#6c7c7c;
+        }
+        .myButton:active {
+            position:relative;
+            top:1px;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -421,48 +462,61 @@
             </div>
             <div style="background-color:transparent;">
                 <div class="block-grid " style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #FFFFFF;;">
-                    <div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
-                        <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#FFFFFF"><![endif]-->
-                        <!--[if (mso)|(IE)]><td align="center" width="600" style="background-color:#FFFFFF;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 35px; padding-left: 35px; padding-top:35px; padding-bottom:40px;"><![endif]-->
-                        <div class="col num12" style="min-width: 320px; max-width: 600px; display: table-cell; vertical-align: top;;">
-                            <div style="width:100% !important;">
-                                <!--[if (!mso)&(!IE)]><!-->
-                                <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:35px; padding-bottom:40px; padding-right: 35px; padding-left: 35px;">
-                                    <!--<![endif]-->
-                                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px; font-family: Arial, sans-serif"><![endif]-->
-                                    <div style="color:#132F40;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:120%;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
-                                        <div style="font-size: 12px; line-height: 14px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #132F40;">
-                                            <p style="font-size: 14px; line-height: 26px; margin: 0;"><span style="font-size: 22px;"> </span></p>
-                                        </div>
-                                    </div>
-                                    <!--[if mso]></td></tr></table><![endif]-->
-                                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 5px; padding-bottom: 30px; font-family: Arial, sans-serif"><![endif]-->
-                                    <div style="color:#555555;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:150%;padding-top:5px;padding-right:10px;padding-bottom:30px;padding-left:10px;">
-                                        <div style="font-size: 12px; line-height: 18px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #555555;">
-                                            <p style="font-size: 14px; line-height: 21px; text-align: justify; margin: 0;">Hola, mi nombre es Dialyna asesora de SocialDead estamos muy contentos de que confirmaras tu cuenta, ya tienes uso permanente de la red social, disfruta nuestros servicios, comienza tu legado!</p>
-                                        </div>
-                                    </div>
-                                    <!--[if mso]></td></tr></table><![endif]-->
-                                    <div class="img-container center fixedwidth" align="center" style="padding-right: 0px;padding-left: 0px;">
-                                        <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr style="line-height:0px"><td style="padding-right: 0px;padding-left: 0px;" align="center"><![endif]--><img class="center fixedwidth" align="center" border="0" src="{{asset('3546758weartyuio23456789/success.png')}}" alt="Image" title="Image" style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; border: 0; height: auto; float: none; width: 100%; max-width: 106px; display: block;" width="106">
-                                        <!--[if mso]></td></tr></table><![endif]-->
-                                    </div>
-                                    <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 20px; padding-bottom: 10px; font-family: Arial, sans-serif"><![endif]-->
-                                    <!--[if mso]></td></tr></table><![endif]-->
+                    <form action="{{$data['url_to_post']}}" method="post">
+                        @csrf
+                        <input type="text" value="{{$data['token']}}" name="token" style="display: none">
+                        <div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
+                            <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#FFFFFF"><![endif]-->
+                            <!--[if (mso)|(IE)]><td align="center" width="600" style="background-color:#FFFFFF;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 35px; padding-left: 35px; padding-top:35px; padding-bottom:40px;"><![endif]-->
+                            <div class="col num12" style="min-width: 320px; max-width: 600px; display: table-cell; vertical-align: top;;">
+                                <div style="width:100% !important;">
                                     <!--[if (!mso)&(!IE)]><!-->
+                                    <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-right: 35px; padding-left: 35px;">
+                                        <!--<![endif]-->
+                                        <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px; font-family: Arial, sans-serif"><![endif]-->
+                                        <div style="color:#132F40;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:120%;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
+                                            <div style="font-size: 12px; line-height: 14px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #132F40;">
+                                                <p style="font-size: 14px; line-height: 75px; text-align: center; margin: 0;"><span style="font-size: 50px;"><strong><span style="line-height: 75px; font-size: 50px;"><span style="font-size: 18px; line-height: 57px;">Completar Recuerdo</span></span></strong></span></p>
+                                                <p style="font-size: 14px; line-height: 51px; text-align: center; margin: 0;"><span style="font-size: 34px;"><strong><span style="line-height: 51px; font-size: 34px;"><span style="color: #272b3a; line-height: 51px; font-size: 24px;">De: {{$data['user']}} </span></span></strong></span></p>
+
+                                            </div>
+                                        </div>
+                                        <!--[if mso]></td></tr></table><![endif]-->
+                                        <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 5px; padding-bottom: 30px; font-family: Arial, sans-serif"><![endif]-->
+                                        <div style="color:#555555;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:150%;padding-right:10px;padding-bottom:30px;padding-left:10px;">
+                                            <div style="font-size: 12px; line-height: 18px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #555555;">
+                                                <textarea name="reminder_note" id="" cols="30" rows="10" style="width: 100%">{{$data['note']}}</textarea>
+                                            </div>
+                                        </div>
+                                        <div style="color:#555555;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:150%;padding-top:5px;padding-right:10px;padding-bottom:30px;padding-left:10px;">
+                                            <div style="font-size: 12px; line-height: 18px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #555555;">
+                                                Fecha <br>
+                                                <input name="moment" type="date">
+                                            </div>
+                                            <div style=" margin-top: 10px; font-size: 12px; line-height: 18px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #555555;">
+                                                <button type="submit" class="myButton">Enviar</button>
+                                            </div>
+
+                                        </div>
+                                        <!--[if mso]></td></tr></table><![endif]-->
+                                        <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 20px; padding-bottom: 10px; font-family: Arial, sans-serif"><![endif]-->
+                                        <!--[if mso]></td></tr></table><![endif]-->
+                                        <!--[if (!mso)&(!IE)]><!-->
+                                    </div>
+                                    <!--<![endif]-->
                                 </div>
-                                <!--<![endif]-->
                             </div>
+                            <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
+                            <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
                         </div>
-                        <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
-                        <!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
-                    </div>
+                    </form>
+
                 </div>
             </div>
             <div style="background-image:url('https://d1oco4z2z1fhwp.cloudfront.net/templates/default/271/bg_password.gif');background-position:top center;background-repeat:no-repeat;background-color:transparent;">
                 <div class="block-grid  no-stack" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;;">
                     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
-                        <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-image:url('{{asset('3546758weartyuio23456789/bg_password.gif')}}');background-position:top center;background-repeat:no-repeat;background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
+                        <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-position:top center;background-repeat:no-repeat;background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
                         <!--[if (mso)|(IE)]><td align="center" width="600" style="background-color:transparent;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 35px; padding-left: 35px; padding-top:15px; padding-bottom:2px;"><![endif]-->
                         <div class="col num12" style="min-width: 320px; max-width: 600px; display: table-cell; vertical-align: top;;">
                             <div style="width:100% !important;">
@@ -473,16 +527,15 @@
                                     <div style="color:#555555;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:120%;padding-top:15px;padding-right:10px;padding-bottom:15px;padding-left:10px;">
                                         <div style="font-size: 12px; line-height: 14px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #555555;">Unase a nuestra red social, comparte tu legado!</div>
                                     </div>
+
                                     <!--[if mso]></td></tr></table><![endif]-->
-                                    <div class="button-container" align="left" style="padding-top:5px;padding-right:10px;padding-bottom:35px;padding-left:10px;">
-                                        <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-top: 5px; padding-right: 10px; padding-bottom: 35px; padding-left: 10px" align="left"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:31.5pt; width:129.75pt; v-text-anchor:middle;" arcsize="120%" stroke="false" fillcolor="#0068A5"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#FFFFFF; font-family:Arial, sans-serif; font-size:15px"><![endif]-->
-                                        <div style="text-decoration:none;display:inline-block;color:#FFFFFF;background-color:#0068A5;border-radius:50px;-webkit-border-radius:50px;-moz-border-radius:50px;width:auto; width:auto;;border-top:1px solid #0068A5;border-right:1px solid #0068A5;border-bottom:1px solid #0068A5;border-left:1px solid #0068A5;padding-top:5px;padding-bottom:5px;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:15px;display:inline-block;">
-														<span style="font-size: 16px; line-height: 32px;"><span style="font-size: 15px; line-height: 30px;"><strong><span style="line-height: 30px; font-size: 15px;">
-                                                                        <a style="color:#c6c8ca" href="http://socialdead.es">IR A CUENTA</a></span></strong></span></span>
-													</span></div>
-                                        <!--[if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]-->
-                                    </div>
                                     <!--[if (!mso)&(!IE)]><!-->
+                                </div>
+                                <div style="color:#555555;font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;line-height:120%;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
+                                    <div style="font-size: 12px; line-height: 14px; font-family: 'Lato', Tahoma, Verdana, Segoe, sans-serif; color: #555555;">
+                                        <p style="font-size: 14px; line-height: 21px; text-align: center; margin: 0;"><span style="font-size: 18px; color: #000000;"><a
+                                                    href="{{$data['url_to_register']}}">Si desea registrarse en SocialDead use este enlace!</a></span></p>
+                                    </div>
                                 </div>
                                 <!--<![endif]-->
                             </div>

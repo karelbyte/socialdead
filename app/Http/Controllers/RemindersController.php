@@ -5,19 +5,23 @@ namespace App\Http\Controllers;
 use App\Events\NotificationEvent;
 use App\Http\Resources\Notify;
 use App\Http\Resources\ReminderResource;
+use App\Mail\SubReminderToUser;
 use App\Mail\UserNotification;
 use App\Models\Audio;
 use App\Models\Notification;
 use App\Models\Photo;
 use App\Models\Reminder;
 use App\Models\ReminderShare;
+use App\Models\SubReminder;
+use App\Models\SubReminderUser;
 use App\Models\Video;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
 class RemindersController extends Controller
@@ -232,5 +236,155 @@ class RemindersController extends Controller
         $notification = Notification::query()->find($request->notification);
         $notification->update(['status_id' =>  2]);  // LEIDO
         return http_response_code(200);
+    }
+
+    // SUB -- RECUERDOS -------------------------------------------
+
+    public function getSubReminder(Request $request) {
+        $sub = SubReminder::query()->where('id', $request->id)
+            ->where('status_id', 1)->first();
+        if ($request->has('notyID')) {
+            Notification::query()->where('id',  $request->notyID)->update(['status_id' => 2]);
+        }
+        if ($sub !== null) {
+            $data = [
+                'note' => $sub->note,
+                'user' => $sub->UserOwner->full_names,
+                'id' => $sub->id,
+            ];
+            return response()->json(['status' => 1 , 'dat' => $data]);
+        } else {
+            return response()->json(['status' => 2 , 'msj' => 'Gracias, la ayuda fue prestada por otra persona!']);
+        }
+    }
+
+    public function UpdateSubReminder(Request $request) {
+
+        Validator::make($request->all(), [
+            'reminder_note' => ['required', 'string', 'max:1190'],
+            'moment' => ['required', 'date'],
+            'token' => ['required']
+        ])->validate();
+
+        $sub = SubReminder::query()->where('token', $request->token)
+            ->where('status_id', 1)
+            ->first();
+        if ($sub !== null) {
+            Reminder::query()
+                ->create([
+                    'user_uid' => $sub->user_uid,
+                    'moment' => Carbon::parse($request->moment),
+                    'title' => 'Sin titulo',
+                    'subtitle' => 'Sin subtitulo',
+                    'note' =>  $request->reminder_note,
+                    'recurrent' => 0,
+                    'type' => 1,
+                ]);
+            $sub->status_id = 2; // FINALIZADO
+            $sub->save();
+            return view('social.user_reminder_complete_success');
+        } else {
+            return view('social.user_account_not found');
+        }
+    }
+    public function UpdateSubReminderFromSD(Request $request) {
+        $sub = SubReminder::query()->where('id', $request->id)
+            ->where('status_id', 1)
+            ->first();
+        if ($sub !== null) {
+            Reminder::query()
+                ->create([
+                    'user_uid' => $sub->user_uid,
+                    'moment' => Carbon::parse($request->moment),
+                    'title' => 'Sin titulo',
+                    'subtitle' => 'Sin subtitulo',
+                    'note' =>  $request->reminder_note,
+                    'recurrent' => 0,
+                    'type' => 1,
+                ]);
+            $sub->status_id = 2; // FINALIZADO
+            $sub->save();
+            return response()->json('El recordatorio fue enviado!');
+        } else {
+            return response()->json('El recordatorio fue enviado!');
+        }
+    }
+
+    public function IndexSubReminder($token) {
+        $sub = SubReminder::query()->where('token', $token)
+            ->where('status_id', 1)
+            ->first();
+        if ($sub !== null) {
+            $data = [
+                'note' => $sub->note,
+                'user' => $sub->UserOwner->full_names,
+                'token' => $token,
+                'url_to_register' => 'http://socialdead.es',
+                'url_to_post' => 'http://socialdead.jet/recuerdos/actualizar'
+            ];
+            return view('social.user_reminder_complete', ['data' => $data]);
+        } else {
+            return view('social.user_account_not found');
+        }
+    }
+
+    public function saveSubReminder(Request $request) {
+        $item = $request->item;
+        $subReminder = SubReminder::query()->create(
+            [
+                'user_uid' => $request->user()->uid,
+                'note' => $item['note'],
+                'to_user_email' => $item['to_user_email'],
+                'to_user_email_cc' => $item['to_user_email_cc'],
+                'to_user_email_ccc' => $item['to_user_email_ccc'],
+                'token' => Str::uuid()->toString() . Carbon::now()->timestamp,
+                'status_id' => 1
+            ]
+        );
+       $data = [
+         'user_name' => $request->user()->full_names,
+         'note' => $item['note'],
+        // 'url_to_response' => 'http://core.socialdead.es/recuerdos/' . $subReminder->token,
+         'url_to_response' => 'http://socialdead.jet/recuerdos/' . $subReminder->token,
+         'url_to_register' => 'http://socialdead.es'
+       ];
+
+       if ($item['to_user_email'] !== null) {
+           Mail::to($item['to_user_email'])->send(new SubReminderToUser($data));
+       }
+        if ($item['to_user_email_cc'] !== null) {
+            Mail::to($item['to_user_email_cc'])->send(new SubReminderToUser($data));
+       }
+        if ($item['to_user_email_ccc'] !== null) {
+            Mail::to($item['to_user_email_ccc'])->send(new SubReminderToUser($data));
+       }
+
+       foreach ($request->sharelist as $User) {
+           SubReminderUser::query()->create([
+              'sub_reminder_id' => $subReminder->id,
+              'to_user_uid' => $User
+           ]);
+
+           $data = Notification::query()->create([
+               'type_id' => 4, // INFO DE RECORDATORIO
+               'data' =>  $subReminder->id,
+               'moment' => Carbon::now(),
+               'from_user' =>$request->user()->uid,
+               'to_user' => $User,
+               'note' => 'Ayuda sobre recordatorio',
+               'status_id' => 1 // NO VISTO
+           ]);
+           // ENVIANDO NOTIFICACION POR EMAIL SI ESTA ACTIVA ESA CONDICION
+           if ($data->toUser->settingNotifications->notification_email === 1) {
+               $data_email = [
+                   'from' => $data->fromUser->full_names,
+                   'to' => $data->toUser->full_names,
+                   'note' => 'Ayuda sobre recordatorio'
+               ];
+               Mail::to($data->touser->email)->send(new UserNotification($data_email));
+           }
+           broadcast(new NotificationEvent($User, new Notify($data)))->toOthers();
+       }
+        return response()->json('Solicitud de ayuda enviada!');
     }
 }

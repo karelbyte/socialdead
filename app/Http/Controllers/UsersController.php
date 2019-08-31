@@ -7,6 +7,8 @@ use App\Http\Requests\UserCreateRequest;
 use App\Http\Resources\UserOnly;
 use App\Http\Resources\UserSearch;
 use App\Mail\UserAccountConfirm;
+use App\Mail\UserNotification;
+use App\Mail\UserNotificationToken;
 use App\Mail\UserWelcome;
 use App\Models\User;
 use App\Models\UserStatus;
@@ -49,6 +51,57 @@ class UsersController extends Controller
           Mail::to($user->email)->send(new UserWelcome($mail_data));
           return view('social.user_account_confirm_success');
       }
+    }
+
+    public function updatePasswordRecovery(Request $request) {
+
+        $user = User::query()->where('secret', $request->token)->first();
+
+        if ($user === null) {
+            return response('El codigo de confirmación no es correcto!.');
+        } else {
+            $user->secret = Str::random(30);
+            $user->password = $request->password;
+            $user->save();
+            $data_email = [
+                'from' => 'SocialDead',
+                'to' => $user->full_names,
+                'note' => 'Recuperacion de contraseña finalizada con exito!'
+            ];
+            Mail::to($user->email)->send(new UserNotification($data_email));
+            return response('Recuperación de clave exitosa!');
+        }
+    }
+
+    public function recoveryToke (Request $request) {
+        $comprobar = new \GuzzleHttp\Client();
+
+        $re_catcha = $comprobar->post( 'https://www.google.com/recaptcha/api/siteverify', [
+            'form_params' => [
+                'secret' => '6LcQxqUUAAAAAILKScU6R7RLqx0-qfySmTCE0rBA',
+                'response' => $request->token
+            ],
+        ]);
+
+        $result = json_decode($re_catcha->getBody()->getContents());
+
+        if (!$result->success) return http_response_code(500);
+
+        $user = User::query()->where('email', $request->email)->first();
+
+        if ($user === null) {
+            return response('No se encontro el email en nuestra red.');
+        } else {
+            $user->secret = Str::random(5);
+            $user->save();
+            $mail_data = [
+                'user_name' => $user->full_names,
+                'token' => $user->secret,
+                'url' => url('/')
+            ];
+            Mail::to($user->email)->send(new UserNotificationToken($mail_data));
+            return response('Se han enviado el código confirmación al busón proporcionado!');
+        }
     }
 
     public function store(UserCreateRequest $request) {

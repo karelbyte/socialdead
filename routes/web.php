@@ -22,13 +22,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 // CONFIRMACION DE CUENTA DEL USUARIO SOCIALDEAD
 Route::get('/confirmacion-de-cuenta/{token}', 'UsersController@confirmAcount');
 
+// COMPLETAR RECORDATORIO
+Route::get('/recuerdos/{token}', 'RemindersController@IndexSubReminder');
+Route::post('/recuerdos/actualizar', 'RemindersController@UpdateSubReminder');
+
 Route::get('/prueba', function () {
 
-  $mail_data = [
-        'user_name' => 'KAREL PUERTO',
-        'url' => url('/')
-    ];
-    return View('emails.user_welcome', ['data' => $mail_data]);
 });
 
 

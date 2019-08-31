@@ -439,8 +439,7 @@
                                     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 5px; padding-bottom: 30px; font-family: Arial, sans-serif"><![endif]-->
                                     <div style="color:#555555;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:150%;padding-top:5px;padding-right:10px;padding-bottom:30px;padding-left:10px;">
                                         <div style="font-size: 12px; line-height: 18px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #555555;">
-                                            <p style="font-size: 14px; line-height: 21px; text-align: justify; margin: 0;">Hola, mi nombre es Dialyna asesora de SocialDead estamos muy contentos de que confirmaras tu cuenta, ya tienes uso permanente de la red social, disfruta nuestros servicios, comienza tu legado!</p>
-                                        </div>
+                                            <p style="font-size: 14px; line-height: 21px; text-align: justify; margin: 0;">Hola, mi nombre es Dialyna asesora de SocialDead estamos muy agradecidos de que asistas con tus comentarios, regístrate y disfruta nuestros servicios, comienza tu legado!</div>
                                     </div>
                                     <!--[if mso]></td></tr></table><![endif]-->
                                     <div class="img-container center fixedwidth" align="center" style="padding-right: 0px;padding-left: 0px;">
@@ -478,7 +477,7 @@
                                         <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-top: 5px; padding-right: 10px; padding-bottom: 35px; padding-left: 10px" align="left"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:31.5pt; width:129.75pt; v-text-anchor:middle;" arcsize="120%" stroke="false" fillcolor="#0068A5"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#FFFFFF; font-family:Arial, sans-serif; font-size:15px"><![endif]-->
                                         <div style="text-decoration:none;display:inline-block;color:#FFFFFF;background-color:#0068A5;border-radius:50px;-webkit-border-radius:50px;-moz-border-radius:50px;width:auto; width:auto;;border-top:1px solid #0068A5;border-right:1px solid #0068A5;border-bottom:1px solid #0068A5;border-left:1px solid #0068A5;padding-top:5px;padding-bottom:5px;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:15px;display:inline-block;">
 														<span style="font-size: 16px; line-height: 32px;"><span style="font-size: 15px; line-height: 30px;"><strong><span style="line-height: 30px; font-size: 15px;">
-                                                                        <a style="color:#c6c8ca" href="http://socialdead.es">IR A CUENTA</a></span></strong></span></span>
+                                                                        <a style="color:#c6c8ca" href="http://socialdead.es">REGISTRAR</a></span></strong></span></span>
 													</span></div>
                                         <!--[if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]-->
                                     </div>

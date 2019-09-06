@@ -12,6 +12,7 @@ use App\Models\Notification;
 use App\Models\Photo;
 use App\Models\Reminder;
 use App\Models\ReminderShare;
+use App\Models\ReminderType;
 use App\Models\SubReminder;
 use App\Models\SubReminderUser;
 use App\Models\Video;
@@ -27,11 +28,15 @@ use Intervention\Image\Facades\Image;
 class RemindersController extends Controller
 {
     public function getList(Request $request) {
-        $data = Reminder::query()->with('audios', 'medias')
+        $data = Reminder::query()->with('audios', 'medias', 'typer', 'emails')
             ->where('user_uid', $request->user()->uid)
             ->orderBy('moment', 'desc')
             ->get();
         return ReminderResource::collection($data);
+    }
+
+    public function getTypes() {
+        return ReminderType::all();
     }
 
     public function ReminderDelete(Request $request) {
@@ -53,14 +58,24 @@ class RemindersController extends Controller
         $reminder = Reminder::query()
             ->create([
                 'user_uid' => $request->user()->uid,
-                'moment' => Carbon::parse($item['moment']),
+                'moment' => date('Y-m-d', strtotime($item['moment'])),
                 'title' => $item['title'],
                 'subtitle' => $item['subtitle'],
                 'note' => $item['note'],
                 'type' => 1,
                 'clone' => $item['recurrent'],
-                'recurrent' => $item['extend']
+                'recurrent' => $item['extend'],
+                'type_id' => $item['type']['id'],
+                'nameto' => $item['nameto'],
             ]);
+        foreach ($item['emails'] as $email) {
+            if ($email['value'] !== null) {
+                $reminder->emails()->create([
+                    'email' => $email['value'],
+                ]);
+            }
+        }
+
         foreach ($request->images as $image) {
             $reminder->details()->create([
                 'type' => 3, //FOTOS
@@ -88,18 +103,28 @@ class RemindersController extends Controller
         $item = $request->item;
         Reminder::query()->where('id', $item['id'])
             ->update([
-                'moment' => Carbon::parse($item['moment']),
+                'moment' =>  date('Y-m-d', strtotime($item['moment'])),
                 'title' => $item['title'],
                 'subtitle' => $item['subtitle'],
                 'note' => $item['note'],
+                'type_id' => $item['type']['id'],
+                'nameto' => $item['nameto'],
                 'recurrent' => $item['recurrent']
             ]);
-
 
         $reminder = Reminder::query()->find($item['id']);
 
         if ($reminder->details !== null) {
             $reminder->details()->delete();
+        }
+        $reminder->emails()->delete();
+
+        foreach ($item['emails'] as $email) {
+            if ($email['value'] !== null) {
+                $reminder->emails()->create([
+                    'email' => $email['value'],
+                ]);
+            }
         }
 
         foreach ($request->images as $image) {
@@ -320,7 +345,8 @@ class RemindersController extends Controller
                 'user' => $sub->UserOwner->full_names,
                 'token' => $token,
                 'url_to_register' => 'http://socialdead.es',
-                'url_to_post' => 'http://socialdead.jet/recuerdos/actualizar'
+                //'url_to_post' => 'http://socialdead.jet/recuerdos/actualizar'
+                'url_to_post' => 'http://core.socialdead.es/recuerdos/actualizar'
             ];
             return view('social.user_reminder_complete', ['data' => $data]);
         } else {
@@ -344,8 +370,8 @@ class RemindersController extends Controller
        $data = [
          'user_name' => $request->user()->full_names,
          'note' => $item['note'],
-        // 'url_to_response' => 'http://core.socialdead.es/recuerdos/' . $subReminder->token,
-         'url_to_response' => 'http://socialdead.jet/recuerdos/' . $subReminder->token,
+         'url_to_response' => 'http://core.socialdead.es/recuerdos/' . $subReminder->token,
+         // 'url_to_response' => 'http://socialdead.jet/recuerdos/' . $subReminder->token,
          'url_to_register' => 'http://socialdead.es'
        ];
 

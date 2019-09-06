@@ -47,6 +47,14 @@ class ReminderResource extends JsonResource
             'title' => $this->title,
             'subtitle' =>  $this->subtitle,
             'note' => $this->note,
+            'type' => $this->typer,
+            'emails' => $this->emails->map(function ($itm) {
+                return [
+                    'id' => $itm['id'],
+                    'value'=> $itm['email']
+                ];
+            }),
+            'nameto' => $this->nameto,
             'recurrent' => (bool) $this->recurrent,
             'extend' => (bool) $this->extend,
             'images' => $this->photos()->pluck('item_id'),

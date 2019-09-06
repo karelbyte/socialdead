@@ -131,6 +131,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('sub-save', 'RemindersController@saveSubReminder');
         Route::post('get-sub', 'RemindersController@getSubReminder');
         Route::post('up-sub', 'RemindersController@UpdateSubReminderFromSD');
+        Route::get('get-types', 'RemindersController@getTypes');
     });
 
 

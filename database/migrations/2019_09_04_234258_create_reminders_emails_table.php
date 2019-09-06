@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRemindersSharesTable extends Migration
+class CreateRemindersEmailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateRemindersSharesTable extends Migration
      */
     public function up()
     {
-        Schema::create('reminders_shares', function (Blueprint $table) {
+        Schema::create('reminders_emails', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->uuid('from_user');
-            $table->uuid('to_user');
             $table->bigInteger('reminder_id')->unsigned();
             $table->foreign('reminder_id')->references('id')->on('reminders')->onDelete('cascade');
-            $table->dateTime('moment');
-            $table->tinyInteger('extend')->unsigned();
+            $table->string('email', 191);
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';
@@ -34,6 +31,6 @@ class CreateRemindersSharesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reminders_shares');
+        Schema::dropIfExists('reminders_emails');
     }
 }

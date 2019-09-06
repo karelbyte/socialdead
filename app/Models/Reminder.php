@@ -29,7 +29,7 @@ class Reminder extends Model
      * @var array
      */
     protected $fillable = ['user_uid', 'moment', 'title', 'subtitle',
-        'note', 'type', 'item_id', 'recurrent', 'extend'];
+        'note', 'type', 'item_id', 'recurrent', 'extend', 'type_id', 'nameto'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -62,6 +62,16 @@ class Reminder extends Model
     public function medias()
     {
         return $this->hasMany(ReminderDetail::class, 'reminder_id', 'id')->whereIn('type', [1, 2]);
+    }
+
+    public function emails()
+    {
+        return $this->hasMany(ReminderEmail::class, 'reminder_id', 'id');
+    }
+
+    public function typer()
+    {
+        return $this->hasOne(ReminderType::class, 'id', 'type_id');
     }
 
     public $timestamps = false;

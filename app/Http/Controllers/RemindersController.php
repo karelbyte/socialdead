@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\NotificationEvent;
 use App\Http\Resources\Notify;
 use App\Http\Resources\ReminderResource;
+use App\Jobs\SendEmailJob;
 use App\Mail\SubReminderToUser;
 use App\Mail\UserNotification;
 use App\Models\Audio;
@@ -172,7 +173,7 @@ class RemindersController extends Controller
                 'to' => $data->toUser->full_names,
                 'note' => 'Recordatorio compartido'
             ];
-            Mail::to($data->touser->email)->send(new UserNotification($data_email));
+            dispatch(new SendEmailJob($data->touser->email,new UserNotification($data_email)));
         }
         broadcast(new NotificationEvent($uidUser, new Notify($data)))->toOthers();
         //-----------------
@@ -376,13 +377,14 @@ class RemindersController extends Controller
        ];
 
        if ($item['to_user_email'] !== null) {
-           Mail::to($item['to_user_email'])->send(new SubReminderToUser($data));
+           dispatch(new SendEmailJob($item['to_user_email'],new SubReminderToUser($data)));
        }
         if ($item['to_user_email_cc'] !== null) {
-            Mail::to($item['to_user_email_cc'])->send(new SubReminderToUser($data));
+            dispatch(new SendEmailJob($item['to_user_email_cc'],new SubReminderToUser($data)));
        }
         if ($item['to_user_email_ccc'] !== null) {
             Mail::to($item['to_user_email_ccc'])->send(new SubReminderToUser($data));
+            dispatch(new SendEmailJob($item['to_user_email_ccc'],new SubReminderToUser($data)));
        }
 
        foreach ($request->sharelist as $User) {
@@ -407,7 +409,7 @@ class RemindersController extends Controller
                    'to' => $data->toUser->full_names,
                    'note' => 'Ayuda sobre recordatorio'
                ];
-               Mail::to($data->touser->email)->send(new UserNotification($data_email));
+               dispatch(new SendEmailJob($data->touser->email,new UserNotification($data_email)));
            }
            broadcast(new NotificationEvent($User, new Notify($data)))->toOthers();
        }

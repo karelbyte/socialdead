@@ -38,6 +38,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/', 'UsersController@getProfile');
         Route::post('status', 'UsersController@updateStatus');
         Route::post('update-password', 'UsersController@updatePassword');
+        Route::post('update-email', 'UsersController@updateEmail');
         Route::post('exit', 'UsersController@exit');
     });
 

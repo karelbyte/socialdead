@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Events\NotificationEvent;
 use App\Http\Resources\NotifyFull;
 use App\Http\Resources\NotifySettings;
+use App\Jobs\SendEmailJob;
 use App\Mail\UserNotification;
 use App\Models\Notification;
 use App\Http\Resources\Notify;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 class NotificationsController extends Controller
 {
@@ -56,7 +56,7 @@ class NotificationsController extends Controller
                 'to' => $data->toUser->full_names,
                 'note' => $request->msj
             ];
-            Mail::to($data->touser->email)->send(new UserNotification($data_email));
+            dispatch(new SendEmailJob($data->touser->email, new UserNotification($data_email)));
         }
         broadcast(new NotificationEvent($request->uid, new Notify($data)))->toOthers();
         return response()->json('Se envió la notificación!');

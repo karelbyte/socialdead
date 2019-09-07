@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Events\UpdateUserStatusEvent;
+use App\Http\Requests\MailUpdateRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Resources\UserOnly;
 use App\Http\Resources\UserSearch;
+use App\Jobs\SendEmailJob;
 use App\Mail\UserAccountConfirm;
 use App\Mail\UserNotification;
 use App\Mail\UserNotificationToken;
@@ -48,15 +50,13 @@ class UsersController extends Controller
               'user_name' => $user->full_names,
               'url' => url('/')
           ];
-          Mail::to($user->email)->send(new UserWelcome($mail_data));
+          dispatch(new SendEmailJob($user->email, new UserWelcome($mail_data)));
           return view('social.user_account_confirm_success');
       }
     }
 
     public function updatePasswordRecovery(Request $request) {
-
         $user = User::query()->where('secret', $request->token)->first();
-
         if ($user === null) {
             return response('El codigo de confirmación no es correcto!.');
         } else {
@@ -66,9 +66,9 @@ class UsersController extends Controller
             $data_email = [
                 'from' => 'SocialDead',
                 'to' => $user->full_names,
-                'note' => 'Recuperacion de contraseña finalizada con exito!'
+                'note' => 'Recuperación de contraseña finalizada con exito!'
             ];
-            Mail::to($user->email)->send(new UserNotification($data_email));
+            dispatch(new SendEmailJob($user->email, new UserNotification($data_email)));
             return response('Recuperación de clave exitosa!');
         }
     }
@@ -99,7 +99,7 @@ class UsersController extends Controller
                 'token' => $user->secret,
                 'url' => url('/')
             ];
-            Mail::to($user->email)->send(new UserNotificationToken($mail_data));
+            dispatch(new SendEmailJob($user->email, new UserNotificationToken($mail_data)));
             return response('Se han enviado el código confirmación al busón proporcionado!');
         }
     }
@@ -153,7 +153,7 @@ class UsersController extends Controller
             'url_confirm' => url('/'). '/confirmacion-de-cuenta/' . $user->secret
         ];
 
-        Mail::to($request->input('email'))->send(new UserAccountConfirm($mail_data));
+        dispatch(new SendEmailJob($request->input('email'), new UserAccountConfirm($mail_data)));
 
         $data = [
             'user' => new UserOnly($user),
@@ -184,6 +184,11 @@ class UsersController extends Controller
 
     public function updatePassword(Request $request) {
         $request->user()->update(['password' => $request->seg]);
+        return http_response_code(200);
+    }
+
+    public function updateEmail(MailUpdateRequest $request) {
+        $request->user()->update(['email' => $request->email]);
         return http_response_code(200);
     }
 }

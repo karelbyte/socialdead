@@ -67,6 +67,7 @@ class RemindersController extends Controller
                 'clone' => $item['recurrent'],
                 'recurrent' => $item['extend'],
                 'type_id' => $item['type']['id'],
+                'category' => $item['category'],
                 'nameto' => $item['nameto'],
             ]);
         foreach ($item['emails'] as $email) {
@@ -110,6 +111,7 @@ class RemindersController extends Controller
                 'note' => $item['note'],
                 'type_id' => $item['type']['id'],
                 'nameto' => $item['nameto'],
+                'category' => $item['category'],
                 'recurrent' => $item['recurrent']
             ]);
 

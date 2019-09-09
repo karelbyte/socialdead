@@ -55,6 +55,7 @@ class ReminderResource extends JsonResource
                 ];
             }),
             'nameto' => $this->nameto,
+            'category' => $this->category  ?? '', // $this->category === null  ? '' :  $this->category,
             'recurrent' => (bool) $this->recurrent,
             'extend' => (bool) $this->extend,
             'images' => $this->photos()->pluck('item_id'),

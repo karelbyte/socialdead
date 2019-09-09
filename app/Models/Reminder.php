@@ -29,7 +29,7 @@ class Reminder extends Model
      * @var array
      */
     protected $fillable = ['user_uid', 'moment', 'title', 'subtitle',
-        'note', 'type', 'item_id', 'recurrent', 'extend', 'type_id', 'nameto'];
+        'note', 'type', 'item_id', 'recurrent', 'extend', 'type_id', 'nameto', 'category'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -25,6 +25,7 @@ Route::get('/confirmacion-de-cuenta/{token}', 'UsersController@confirmAcount');
 // COMPLETAR RECORDATORIO
 Route::get('/recuerdos/{token}', 'RemindersController@IndexSubReminder');
 Route::post('/recuerdos/actualizar', 'RemindersController@UpdateSubReminder');
+Route::get('/recuerdos/remover/{token}', 'RemindersController@cancelReminderEmail');
 
 Route::get('/prueba', function () {
 

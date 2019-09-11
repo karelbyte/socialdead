@@ -18,6 +18,8 @@ class CreateRemindersEmailsTable extends Migration
             $table->bigInteger('reminder_id')->unsigned();
             $table->foreign('reminder_id')->references('id')->on('reminders')->onDelete('cascade');
             $table->string('email', 191);
+            $table->string('token', 50);
+            $table->smallInteger('status_id');
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';

@@ -29,7 +29,7 @@ class ReminderEmail extends Model
     /**
      * @var array
      */
-    protected $fillable = ['reminder_id', 'email'];
+    protected $fillable = ['reminder_id', 'email', 'token', 'status_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

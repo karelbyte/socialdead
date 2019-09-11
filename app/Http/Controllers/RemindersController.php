@@ -8,10 +8,12 @@ use App\Http\Resources\ReminderResource;
 use App\Jobs\SendEmailJob;
 use App\Mail\SubReminderToUser;
 use App\Mail\UserNotification;
+use App\Mail\UserNotificationRecurrent;
 use App\Models\Audio;
 use App\Models\Notification;
 use App\Models\Photo;
 use App\Models\Reminder;
+use App\Models\ReminderEmail;
 use App\Models\ReminderShare;
 use App\Models\ReminderType;
 use App\Models\SubReminder;
@@ -70,13 +72,6 @@ class RemindersController extends Controller
                 'category' => $item['category'],
                 'nameto' => $item['nameto'],
             ]);
-        foreach ($item['emails'] as $email) {
-            if ($email['value'] !== null) {
-                $reminder->emails()->create([
-                    'email' => $email['value'],
-                ]);
-            }
-        }
 
         foreach ($request->images as $image) {
             $reminder->details()->create([
@@ -92,12 +87,50 @@ class RemindersController extends Controller
             ]);
         }
 
+
+        $da =  date('Y-m-d', strtotime($item['moment']));
+        foreach ($item['emails'] as $email) {
+            if ($email['value'] !== null) {
+               $remi = $reminder->emails()->create([
+                   'email' => $email['value'],
+                   'token' => Str::uuid()->toString() . Carbon::now()->timestamp,
+                   'status_id' => 1
+                ]);
+
+                $data_email = [
+                    'from' => $request->user()->full_names,
+                    'to' => $email['value'],
+                    'title' => $item['title'],
+                    'subtitle' => $item['subtitle'],
+                    'note' => $item['note'],
+                    'moment' => $item['moment'] . ' --- ' . Carbon::parse($da)->diffForHumans(),
+                    'url_to_cancel' => 'http://core.socialdead.es/recuerdos/remover/' . $remi->token,
+                    // 'url_to_cancel' => 'http://socialdead.jet/recuerdos/remover/' . $remi->token,
+                    'url_to_register' => 'http://socialdead.es'
+                ];
+                // enviar correo
+                dispatch(new SendEmailJob($email['value'], new UserNotificationRecurrent($data_email)));
+            }
+        }
+
         $data = Reminder::query()
             ->where('user_uid', $request->user()->uid)
             ->orderBy('moment', 'desc')
             ->get();
 
         return  ReminderResource::collection($data);
+    }
+
+    public function cancelReminderEmail($token) {
+       $remin = ReminderEmail::query()->where('token', $token)->where('status_id', 1)->first();
+        if ($remin !== null) {
+            ReminderEmail::query()->where('token', $token)->update([
+               'status_id' => 2 // CANCELO
+            ]);
+            return view('social.user_reminder_email_remover');
+        } else {
+            return view('social.user_account_not found');
+        }
     }
 
     public function updateReminder(Request $request) {
@@ -122,14 +155,6 @@ class RemindersController extends Controller
         }
         $reminder->emails()->delete();
 
-        foreach ($item['emails'] as $email) {
-            if ($email['value'] !== null) {
-                $reminder->emails()->create([
-                    'email' => $email['value'],
-                ]);
-            }
-        }
-
         foreach ($request->images as $image) {
             $reminder->details()->create([
                 'type' => 3, //FOTOS
@@ -143,6 +168,7 @@ class RemindersController extends Controller
                 'item_id' => $media['id']
             ]);
         }
+
 
         $data = Reminder::query()
             ->where('user_uid', $request->user()->uid)

@@ -17,7 +17,7 @@ class CreateRemindersTable extends Migration
             $table->bigIncrements('id');
             $table->uuid('user_uid');
             $table->foreign('user_uid')->references('uid')->on('users')->onDelete('cascade');
-            $table->dateTime('moment');
+            $table->date('moment');
             $table->string('title', 120)->nullable();
             $table->string('subtitle', 120)->nullable();
             $table->string('note', 800)->nullable();

@@ -20,7 +20,7 @@ class Reminder extends Model
 {
     /**
      * The "type" of the auto-incrementing ID.
-     * 
+     *
      * @var string
      */
     protected $keyType = 'integer';
@@ -36,7 +36,7 @@ class Reminder extends Model
      */
     public function user()
     {
-        return $this->belongsTo('App\User', 'user_uid', 'uid');
+        return $this->belongsTo(User::class, 'user_uid', 'uid');
     }
 
     public function details()

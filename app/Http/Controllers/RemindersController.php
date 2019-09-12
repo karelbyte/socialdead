@@ -168,7 +168,32 @@ class RemindersController extends Controller
                 'item_id' => $media['id']
             ]);
         }
+        $reminder->emails()->delete();
 
+        $da =  date('Y-m-d', strtotime($item['moment']));
+        foreach ($item['emails'] as $email) {
+            if ($email['value'] !== null) {
+                $remi = $reminder->emails()->create([
+                    'email' => $email['value'],
+                    'token' => Str::uuid()->toString() . Carbon::now()->timestamp,
+                    'status_id' => 1
+                ]);
+
+                $data_email = [
+                    'from' => $request->user()->full_names,
+                    'to' => $email['value'],
+                    'title' => $item['title'],
+                    'subtitle' => $item['subtitle'],
+                    'note' => $item['note'],
+                    'moment' => $item['moment'] . ' --- ' . Carbon::parse($da)->diffForHumans(),
+                    'url_to_cancel' => 'http://core.socialdead.es/recuerdos/remover/' . $remi->token,
+                    // 'url_to_cancel' => 'http://socialdead.jet/recuerdos/remover/' . $remi->token,
+                    'url_to_register' => 'http://socialdead.es'
+                ];
+                // enviar correo
+                dispatch(new SendEmailJob($email['value'], new UserNotificationRecurrent($data_email)));
+            }
+        }
 
         $data = Reminder::query()
             ->where('user_uid', $request->user()->uid)

@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\DeleteChatMessageMore30Day;
 use App\Console\Commands\DeleteOutTimeAccount;
+use App\Console\Commands\MailReminderYearly;
 use App\Console\Commands\UserMailToConfirmAccount;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -16,7 +17,10 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        DeleteChatMessageMore30Day::class, DeleteOutTimeAccount::class, UserMailToConfirmAccount::class
+        DeleteChatMessageMore30Day::class,
+        DeleteOutTimeAccount::class,
+        UserMailToConfirmAccount::class,
+        MailReminderYearly::class
     ];
 
     /**
@@ -28,8 +32,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command( DeleteChatMessageMore30Day::class)->dailyAt('1:00')->timezone('Europe/Madrid');
-         $schedule->command( DeleteOutTimeAccount::class)->dailyAt('3:00')->timezone('Europe/Madrid');
-         $schedule->command( UserMailToConfirmAccount::class)->dailyAt('7:00')->timezone('Europe/Madrid');
+         $schedule->command( DeleteOutTimeAccount::class)->dailyAt('2:00')->timezone('Europe/Madrid');
+         $schedule->command( UserMailToConfirmAccount::class)->dailyAt('3:00')->timezone('Europe/Madrid');
+         $schedule->command( MailReminderYearly::class)->dailyAt('4:00')->timezone('Europe/Madrid');
 
     }
 

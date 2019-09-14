@@ -38,7 +38,7 @@ class AudiosController extends Controller
                 $patch = storage_path('app/public/') . $uid .'/audios';
                 File::exists( $patch) or File::makeDirectory($patch , 0777, true, true);
                 $request->file->storeAs('public/'.$uid .'/audios/', $name);
-                if ($ext !== 'MP3' ) {
+                if ($ext !== 'MP3') {
                     \FFMpeg::fromDisk('public')
                         ->open($uid .'/audios/' . $name)
                         ->export()
@@ -47,14 +47,15 @@ class AudiosController extends Controller
                         ->save($uid .'/audios/' . $pureName . '.mp3');
                     $patch =  $uid .'/audios/'. $name;
                     Storage::disk('public')->delete($patch);
-                    $name =  $pureName . '.mp3';
+                    $name =  $pureName . '.MP3';
                 }
                 Audio::query()->create([
                     'user_uid' => $uid,
                     'moment' => Carbon::now(),
                     'url' =>  $name,
-                    'title' => 'sin titulo',
-                    'subtitle' => 'sin subtitulo'
+                    'title' => $request->has('title') ? $request->title : 'sin titulo',
+                    'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
+                    'status_id' => $request->has('status') ? 1 : 0,
                 ]);
                 return response()->json('Se archivo el audio!');
             } else {
@@ -99,6 +100,7 @@ class AudiosController extends Controller
             'subtitle' => $request->subtitle,
             'status_id' => $request->status_id,
             'in_history' => $request->in_history,
+            'moment' => Carbon::now(),
             'history_id' => $request->in_history ? $det->id : 0
         ]);
 

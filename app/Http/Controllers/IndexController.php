@@ -8,17 +8,22 @@ use App\Http\Resources\IndexAudioResource;
 use App\Http\Resources\IndexPhotoResource;
 use App\Http\Resources\IndexReminderResource;
 use App\Http\Resources\IndexReminderShareResource;
+use App\Http\Resources\IndexThinKingResource;
 use App\Http\Resources\IndexVideoResource;
 use App\Http\Resources\PhotoShareResource;
 use App\Http\Resources\ThumbsPhotoResource;
 use App\Http\Resources\ThumbsVideoResource;
 use App\Http\Resources\UserProfileGeneral;
 use App\Http\Resources\VideoShareResource;
+use App\Models\Audio;
 use App\Models\AudioShare;
 use App\Models\Contact;
+use App\Models\Photo;
 use App\Models\PhotoShare;
 use App\Models\Reminder;
 use App\Models\ReminderShare;
+use App\Models\Thinking;
+use App\Models\Video;
 use App\Models\VideoShare;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -66,6 +71,16 @@ class IndexController extends Controller
 
         $data = new Collection();
 
+       $Photos = Photo::query()
+            ->where('user_uid', $request->user()->uid)
+            ->whereRaw('datediff(now(), moment) <= 10')
+            ->where('photos.status_id', 1)
+            ->orderBy( 'moment', 'desc')
+            ->get();
+        foreach ($Photos as $photo) {
+            $data->push(new IndexPhotoResource($photo));
+        }
+
         // FOTOS, VIDEOS, AUDIOS PUBLICADOS POR TUS CONTACTOS
        $photos = Contact::query()->leftJoin('photos', 'contacts.contact_user_uid', 'photos.user_uid')
             ->where('contacts.user_uid', $request->user()->uid)
@@ -78,6 +93,17 @@ class IndexController extends Controller
             $data->push(new IndexPhotoResource($photo));
         }
 
+        $Videos = Video::query()
+            ->where('user_uid', $request->user()->uid)
+            ->whereRaw('datediff(now(), moment) <= 10')
+            ->where('videos.status_id', 1)
+            ->orderBy( 'moment', 'desc')
+            ->select( 'videos.user_uid as uid', 'videos.*')
+            ->get();
+        foreach ($Videos as $Video) {
+            $data->push(new IndexVideoResource($Video));
+        }
+
         $videos = Contact::query()->leftJoin('videos', 'contacts.contact_user_uid', 'videos.user_uid')
             ->where('contacts.user_uid', $request->user()->uid)
             ->where('videos.status_id', 1)
@@ -88,6 +114,17 @@ class IndexController extends Controller
 
         foreach ($videos as $video) {
             $data->push(new IndexVideoResource($video));
+        }
+
+        $Audios = Audio::query()
+            ->where('user_uid', $request->user()->uid)
+            ->whereRaw('datediff(now(), moment) <= 10')
+            ->where('audios.status_id', 1)
+            ->orderBy( 'moment', 'desc')
+            ->select( 'audios.user_uid as uid', 'audios.*')
+            ->get();
+        foreach ($Audios as $Audio) {
+            $data->push(new IndexAudioResource($Audio));
         }
 
         $audios = Contact::query()->leftJoin('audios', 'contacts.contact_user_uid', 'audios.user_uid')
@@ -146,6 +183,15 @@ class IndexController extends Controller
             ->orderBy( 'reminders.moment', 'desc')
             ->get();
 
+        $remiders_recurrent = Reminder::query()
+            ->where('user_uid', $request->user()->uid)
+            ->where('recurrent', 1)
+            ->whereRaw('datediff(now(), moment) = 365')->get();
+
+        foreach ($remiders_recurrent as $reminderRecurrent) {
+            $data->push(new IndexReminderResource($reminderRecurrent));
+        }
+
         foreach ($reminders as $reminder) {
            $data->push(new IndexReminderResource($reminder));
         }
@@ -165,10 +211,32 @@ class IndexController extends Controller
             ->orderBy( 'reminders.moment', 'desc')
             ->get();
 
-       // return $reminders_shares;
-
         foreach ($reminders_shares as $reminder_share) {
             $data->push(new IndexReminderShareResource($reminder_share));
+        }
+
+        // BUSCANDO PENSAMIENTOS PROPIOS
+        $ThingKingsYour = Thinking::query()
+            ->where('user_uid', $request->user()->uid)
+            ->whereRaw('datediff(now(), moment) <= 5')
+            ->orderBy( 'moment', 'desc')
+            ->get();
+
+        foreach ($ThingKingsYour as $ThingYour) {
+            $data->push(new IndexThinKingResource($ThingYour));
+        }
+
+        // BUSCANDO PENSAMIENTOS DE OTROS
+
+        $ThingKingsOthers =  Contact::query()->leftJoin('thinkings', 'contacts.contact_user_uid', 'thinkings.user_uid')
+            ->where('contacts.user_uid', $request->user()->uid)
+            ->whereRaw('datediff(now(), thinkings.moment) <= 10')
+            ->select(  'thinkings.*')
+            ->orderBy( 'thinkings.moment', 'desc')
+            ->get();
+
+        foreach ($ThingKingsOthers as $ThingYourO) {
+            $data->push(new IndexThinKingResource($ThingYourO));
         }
 
         // ORGANIZANDO

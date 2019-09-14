@@ -17,8 +17,8 @@ class ThumbsVideoResource extends JsonResource
     {
         $str = strlen($this->url);
         $pureName = substr($this->url, 0,  $str-4);
-        $patch = storage_path('app/public/') . $this->user_uid . '/videos/' . $pureName . '.png';
-        if (file_exists(storage_path('app/public/') . $this->user_uid . '/videos/' . $pureName . '.png')) {
+        $patch = storage_path('app/public/') . $this->user_uid . '/videos/' . $pureName . '.PNG';
+        if (file_exists(storage_path('app/public/') . $this->user_uid . '/videos/' . $pureName . '.PNG')) {
             $thumbs  = Image::make($patch )->encode('data-url', 50)->encoded;
         } else {
             $patch = storage_path('app/public/') . '/social/video_aux.png';

@@ -17,8 +17,8 @@ class AudioResource extends JsonResource
     {
         $file = storage_path('app/public/') . $this->user->uid . '/audios/' . $this->url;
         $data = base64_encode(file_get_contents($file));
-        $mine1 = mime_content_type($file);
-        $src = 'data:'. $mine1 .';base64,'.$data;
+       // $mine1 = mime_content_type($file);
+        $src = 'data:'. 'audio/mp3' .';base64,'.$data;
         return [
             'id' => $this->id,
             'url'=> $src

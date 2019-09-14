@@ -47,23 +47,24 @@ class VideosController extends Controller
                         ->export()
                         ->inFormat(new X264('libmp3lame', 'libx264'))
                         ->toDisk('public')
-                        ->save($uid .'/videos/' . $pureName . '.mp4');
+                        ->save($uid .'/videos/' . $pureName . '.MP4');
                     $patch =  $uid .'/videos/'. $name;
                     Storage::disk('public')->delete($patch);
-                    $name =  $pureName . '.mp4';
+                    $name =  $pureName . '.MP4';
                 }
                 FFMpeg::fromDisk('public')
                     ->open($uid .'/videos/' . $name)
                     ->getFrameFromSeconds(3)
                     ->export()
                     ->toDisk('public')
-                    ->save($uid .'/videos/' . $pureName . '.png');
+                    ->save($uid .'/videos/' . $pureName . '.PNG');
                 Video::query()->create([
                     'user_uid' => $uid,
                     'moment' => Carbon::now(),
                     'url' =>  $name,
-                    'title' => 'sin titulo',
-                    'subtitle' => 'sin subtitulo'
+                    'title' => $request->has('title') ? $request->title : 'sin titulo',
+                    'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
+                    'status_id' => $request->has('status') ? 1 : 0,
                 ]);
                 return response()->json('Se archivo el video!');
             } else {
@@ -108,6 +109,7 @@ class VideosController extends Controller
             'subtitle' => $request->subtitle,
             'status_id' => $request->status_id,
             'in_history' => $request->in_history,
+            'moment' => Carbon::now(),
             'history_id' => $request->in_history ? $det->id : 0
         ]);
 

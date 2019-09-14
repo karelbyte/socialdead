@@ -25,7 +25,7 @@ class PhotoShareResource extends JsonResource
             'id' => $this->id,
             'cron' => Str::uuid(),
             'user' => new UserSearch($user),
-            'url'=> Image::make(storage_path('app/public/') . $this->from_user . '/photos/' . $this->photo->url)->resize(150, 150)->encode('data-url', 50)->encoded,
+            'url'=> Image::make(storage_path('app/public/') . $this->from_user . '/photos/' . $this->photo->url)->encode('data-url', 70)->encoded,
             'moment' => Carbon::parse($this->moment)->format('d-m-Y H:i'),
             'time_ago' => Carbon::parse($this->moment)->diffForHumans(),
             'title' => $this->photo->title,

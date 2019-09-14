@@ -135,6 +135,11 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('get-types', 'RemindersController@getTypes');
     });
 
+    Route::prefix('thinkings')->group(function () {
+        Route::post('lists', 'ThinkingsController@getList');
+        Route::post('save', 'ThinkingsController@save');
+    });
+
 
     Route::prefix('tree')->group(function () {
         Route::post('family', 'TreeController@getTree');

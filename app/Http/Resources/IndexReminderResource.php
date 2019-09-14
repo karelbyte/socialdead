@@ -23,7 +23,7 @@ class IndexReminderResource extends JsonResource
         $fotos = new Collection();
         foreach ($this->photos as $phot) {
             $photo = Photo::query()->find($phot['item_id']);
-            $thumbs = Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $photo->url)->resize(150, 150)->encode('data-url', 50)->encoded;
+            $thumbs = Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $photo->url)->encode('data-url', 70)->encoded;
             $dat = [
                 'id' => $photo->id,
                 'thumbs' => $thumbs
@@ -43,7 +43,7 @@ class IndexReminderResource extends JsonResource
             ];
             $videos->add($dat);
         }
-     $audios = new Collection();
+      $audios = new Collection();
       $patch = storage_path('app/public/') . '/social/audio_aux.jpg';
         $thumbs  = Image::make($patch )->resize(200, 150)->encode('data-url', 50)->encoded;
         foreach ($this->audios as $au) {
@@ -53,7 +53,7 @@ class IndexReminderResource extends JsonResource
             ];
             $audios->add($dat);
         }
-
+        $sub = $this->typer->id === 10 ? $this->category :  $this->nameto;
         return [
             'cron' => Str::uuid(),
             'user' => [
@@ -63,7 +63,8 @@ class IndexReminderResource extends JsonResource
             'moment' => (int) Carbon::parse($this->moment)->timestamp,
             'time_ago' => Carbon::parse($this->moment)->diffForHumans(),
             'title' => $this->title,
-            'subtitle' => 'Un dia como hoy pero de ' . Carbon::parse($this->moment)->diffForHumans() . ' programastes este recordatorio',
+            'subtitle' => 'Un dia como hoy, ' . Carbon::parse($this->moment)->diffForHumans() . ' ' . $this->typer->label . ' '
+                . $sub,
             'note' => $this->note,
             'rating' => $this->rating,
             'type' => 4, // Recordatorio

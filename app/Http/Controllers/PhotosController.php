@@ -37,8 +37,9 @@ class PhotosController extends Controller
                     'user_uid' => $uid,
                     'moment' => Carbon::now(),
                     'url' =>  $name,
-                    'title' =>  'sin titulo',
-                    'subtitle' =>  'sin subtitulo'
+                    'title' => $request->has('title') ? $request->title : 'sin titulo',
+                    'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
+                    'status_id' => $request->has('status') ? 1 : 0,
                 ]);
                 return response()->json('Se archivo la imagen!');
             } else {
@@ -96,6 +97,7 @@ class PhotosController extends Controller
             'subtitle' => $request->subtitle,
             'status_id' => $request->status_id,
             'in_history' => $request->in_history,
+            'moment' => Carbon::now(),
             'history_id' => $historyID
         ]);
         return http_response_code(200);

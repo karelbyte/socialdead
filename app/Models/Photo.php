@@ -19,6 +19,11 @@ class Photo extends Model
         return $this->belongsTo(User::class, 'user_uid', 'uid');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(PhotoComment::class);
+    }
+
     public function photoEraser():void {
        $patch = $this->user_uid .'/photos/'.$this->url;
        Storage::disk('public')->delete($patch);

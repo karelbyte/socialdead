@@ -26,10 +26,10 @@ class IndexThinKingResource extends JsonResource
             'cron' => Str::uuid(),
             'user' => new UserSearch($user),
             'id' => $this->id,
-            'moment' => (int) Carbon::parse($this->moment)->timestamp,
+            'moment' => $sub, // (int) Carbon::parse($this->moment)->timestamp,
             'time_ago' => Carbon::parse($this->moment)->diffForHumans(),
             'title' => $this->title,
-            'subtitle' => $sub,
+            'subtitle' => $this->subtitle,
             'rating' => $this->rating,
             'type' => 5, // PENSAMIENTO
             'note' => $this->note

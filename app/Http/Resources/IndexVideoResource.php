@@ -37,10 +37,10 @@ class IndexVideoResource extends JsonResource
             'cron' => Str::uuid(),
             'user' => new UserSearch($user),
             'id' => $this->id,
-            'moment' => (int) Carbon::parse($this->moment)->timestamp,
+            'moment' => $sub, // (int) Carbon::parse($this->moment)->timestamp,
             'time_ago' => Carbon::parse($this->moment)->diffForHumans(),
             'title' => $this->title,
-            'subtitle' => $sub,//  $user->full_names . ' publico este video '. Carbon::parse($this->moment)->diffForHumans(),
+            'subtitle' => $this->subtitle,//  $user->full_names . ' publico este video '. Carbon::parse($this->moment)->diffForHumans(),
             'rating' => $this->rating,
             'thumbs' => $thumbs,
             'type' => 2, // VIDEO

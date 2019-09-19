@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateVideosSharesTable extends Migration
+class CreatePhotosCommentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateVideosSharesTable extends Migration
      */
     public function up()
     {
-        Schema::create('videos_shares', function (Blueprint $table) {
+        Schema::create('photos_comments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('from_user');
-            $table->uuid('to_user');
-            $table->bigInteger('video_id')->unsigned();
-            $table->foreign('video_id')->references('id')->on('videos')->onDelete('cascade');
+            $table->bigInteger('photo_id')->unsigned();
+            $table->foreign('photo_id')->references('id')->on('photos')->onDelete('cascade');
+            $table->string('note', 1000);
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';
@@ -32,6 +32,6 @@ class CreateVideosSharesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('videos_shares');
+        Schema::dropIfExists('photos_comments');
     }
 }

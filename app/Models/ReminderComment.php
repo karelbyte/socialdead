@@ -6,19 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property integer $id
- * @property integer $video_id
+ * @property integer $reminder_id
  * @property string $from_user
  * @property string $note
- * @property Video $video
+ * @property string $moment
+ * @property Reminder $reminder
  */
-class VideoComment extends Model
+class ReminderComment extends Model
 {
     /**
      * The table associated with the model.
      * 
      * @var string
      */
-    protected $table = 'videos_comments';
+    protected $table = 'reminders_comments';
 
     /**
      * The "type" of the auto-incrementing ID.
@@ -30,14 +31,14 @@ class VideoComment extends Model
     /**
      * @var array
      */
-    protected $fillable = ['video_id', 'from_user', 'note', 'moment'];
+    protected $fillable = ['reminder_id', 'from_user', 'note', 'moment'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function video()
+    public function reminder()
     {
-        return $this->belongsTo(Video::class);
+        return $this->belongsTo('App\Reminder');
     }
 
     public $timestamps = false;

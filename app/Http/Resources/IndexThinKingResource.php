@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Models\ThinkingComment;
 use App\Models\User;
+use App\Models\VideoComment;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +24,11 @@ class IndexThinKingResource extends JsonResource
         $user = User::query()->find($this->user_uid);
         $sub = $this->user_uid === Auth::user()->uid ? 'Publicastes esta nota '. Carbon::parse($this->moment)->diffForHumans()
             :  $user->full_names . ' publico esta nota '. Carbon::parse($this->moment)->diffForHumans();
+
+        $commes = ThinkingComment::query()->where('thinking_id',  $this->id)->orderBy('moment', 'desc')->get();
+
+        $resulComments = CommentsResource::collection($commes);
+
         return [
             'cron' => Str::uuid(),
             'user' => new UserSearch($user),
@@ -32,7 +39,8 @@ class IndexThinKingResource extends JsonResource
             'subtitle' => $this->subtitle,
             'rating' => $this->rating,
             'type' => 5, // PENSAMIENTO
-            'note' => $this->note
+            'note' => $this->note,
+            'comments' => $resulComments,
         ];
     }
 }

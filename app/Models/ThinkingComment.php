@@ -30,7 +30,7 @@ class ThinkingComment extends Model
     /**
      * @var array
      */
-    protected $fillable = ['thinking_id', 'from_user', 'note'];
+    protected $fillable = ['thinking_id', 'from_user', 'note', 'moment'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

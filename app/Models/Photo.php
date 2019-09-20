@@ -21,7 +21,7 @@ class Photo extends Model
 
     public function comments()
     {
-        return $this->hasMany(PhotoComment::class);
+        return $this->hasMany(PhotoComment::class)->orderBy('photos_comments.moment', 'desc');
     }
 
     public function photoEraser():void {

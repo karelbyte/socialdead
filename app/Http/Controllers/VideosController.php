@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CommentsResource;
 use App\Http\Resources\IndexVideoResource;
+use App\Http\Resources\PhotoCommentsResource;
 use App\Http\Resources\ThumbsVideoProfileResource;
 use App\Http\Resources\ThumbsVideoResource;
 use App\Http\Resources\VideoResource;
 use App\Models\History;
 use App\Models\HistoryDetails;
 use App\Models\Video;
+use App\Models\VideoComment;
 use App\Models\VideoShare;
 use Carbon\Carbon;
 use FFMpeg;
@@ -27,6 +30,19 @@ class VideosController extends Controller
     public function getVideo($id) {
         $data = Video::query()->find($id);
         return new VideoResource($data);
+    }
+
+    public function setComment(Request $request) {
+        VideoComment::query()->create([
+            'from_user' => $request->user()->uid,
+            'video_id' => $request->id,
+            'note' => $request->note,
+            'moment' => Carbon::now(),
+        ]);
+        $comments = VideoComment::query()->where('video_id', $request->id)
+            ->orderBy('moment', 'desc')->get();
+
+        return CommentsResource::collection($comments);
     }
 
     public function saveVideos(Request $request) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NotificationEvent;
+use App\Http\Resources\CommentsResource;
 use App\Http\Resources\Notify;
 use App\Http\Resources\ReminderResource;
 use App\Jobs\SendEmailJob;
@@ -12,7 +13,9 @@ use App\Mail\UserNotificationRecurrent;
 use App\Models\Audio;
 use App\Models\Notification;
 use App\Models\Photo;
+use App\Models\PhotoComment;
 use App\Models\Reminder;
+use App\Models\ReminderComment;
 use App\Models\ReminderEmail;
 use App\Models\ReminderShare;
 use App\Models\ReminderType;
@@ -40,6 +43,20 @@ class RemindersController extends Controller
 
     public function getTypes() {
         return ReminderType::all();
+    }
+
+
+    public function setComment(Request $request) {
+        ReminderComment::query()->create([
+            'from_user' => $request->user()->uid,
+            'reminder_id' => $request->id,
+            'note' => $request->note,
+            'moment' => Carbon::now(),
+        ]);
+        $comments = ReminderComment::query()->where('reminder_id', $request->id)
+            ->orderBy('moment', 'desc')->get();
+
+        return CommentsResource::collection($comments);
     }
 
     public function ReminderDelete(Request $request) {
@@ -88,7 +105,7 @@ class RemindersController extends Controller
         }
 
 
-        $da =  date('Y-m-d', strtotime($item['moment']));
+        $da = date('Y-m-d', strtotime($item['moment']));
         foreach ($item['emails'] as $email) {
             if ($email['value'] !== null) {
                $remi = $reminder->emails()->create([

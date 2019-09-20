@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Models\PhotoComment;
 use App\Models\User;
+use App\Models\VideoComment;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +35,10 @@ class IndexVideoResource extends JsonResource
         $sub = $this->uid === Auth::user()->uid ? 'Publicastes este video '. Carbon::parse($this->moment)->diffForHumans()
             :  $user->full_names . ' publico este video '. Carbon::parse($this->moment)->diffForHumans();
 
+        $commes = VideoComment::query()->where('video_id',  $this->id)->orderBy('moment', 'desc')->get();
+
+        $resulComments = CommentsResource::collection($commes);
+
         return [
             'cron' => Str::uuid(),
             'user' => new UserSearch($user),
@@ -42,6 +48,7 @@ class IndexVideoResource extends JsonResource
             'title' => $this->title,
             'subtitle' => $this->subtitle,//  $user->full_names . ' publico este video '. Carbon::parse($this->moment)->diffForHumans(),
             'rating' => $this->rating,
+            'comments' => $resulComments,
             'thumbs' => $thumbs,
             'type' => 2, // VIDEO
         ];

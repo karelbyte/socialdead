@@ -89,6 +89,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('update', 'PhotosController@updatePhoto');
         Route::post('to-history', 'PhotosController@toHistory');
         Route::post('share', 'PhotosController@sharePhoto');
+        Route::post('comment-save', 'PhotosController@setComment');
     });
 
     Route::prefix('videos')->group(function () {
@@ -99,6 +100,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('update', 'VideosController@updateVideo');
         Route::post('to-history', 'VideosController@toHistory');
         Route::post('share', 'VideosController@shareVideo');
+        Route::post('comment-save', 'VideosController@setComment');
     });
 
     Route::prefix('audios')->group(function () {
@@ -109,6 +111,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('update', 'AudiosController@updateAudio');
         Route::post('to-history', 'AudiosController@toHistory');
         Route::post('share', 'AudiosController@shareAudio');
+        Route::post('comment-save', 'AudiosController@setComment');
     });
 
     Route::prefix('medias')->group(function () {
@@ -133,11 +136,13 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('get-sub', 'RemindersController@getSubReminder');
         Route::post('up-sub', 'RemindersController@UpdateSubReminderFromSD');
         Route::get('get-types', 'RemindersController@getTypes');
+        Route::post('comment-save', 'RemindersController@setComment');
     });
 
     Route::prefix('thinkings')->group(function () {
         Route::post('lists', 'ThinkingsController@getList');
         Route::post('save', 'ThinkingsController@save');
+        Route::post('comment-save', 'ThinkingsController@setComment');
     });
 
 

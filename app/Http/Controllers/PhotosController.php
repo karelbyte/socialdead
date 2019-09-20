@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CommentsResource;
+use App\Http\Resources\PhotoCommentsResource;
 use App\Http\Resources\PhotoResource;
 use App\Models\History;
 use App\Models\HistoryDetails;
 use App\Models\Photo;
+use App\Models\PhotoComment;
 use App\Models\PhotoShare;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,6 +24,19 @@ class PhotosController extends Controller
     public function getPhoto($id) {
         $data = Photo::query()->find($id);
         return new PhotoResource($data);
+    }
+
+    public function setComment(Request $request) {
+       PhotoComment::query()->create([
+            'from_user' => $request->user()->uid,
+            'photo_id' => $request->id,
+            'note' => $request->note,
+            'moment' => Carbon::now(),
+        ]);
+       $comments = PhotoComment::query()->where('photo_id', $request->id)
+           ->orderBy('moment', 'desc')->get();
+
+        return CommentsResource::collection($comments);
     }
 
     public function savePhoto(Request $request) {

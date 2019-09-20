@@ -30,7 +30,7 @@ class PhotoComment extends Model
     /**
      * @var array
      */
-    protected $fillable = ['photo_id', 'from_user', 'note'];
+    protected $fillable = ['photo_id', 'from_user', 'note', 'moment'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

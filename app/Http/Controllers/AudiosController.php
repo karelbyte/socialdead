@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\AudioResource;
+use App\Http\Resources\CommentsResource;
 use App\Http\Resources\ThumbsAudioResource;
 use App\Models\Audio;
+use App\Models\AudioComment;
 use App\Models\AudioShare;
 use App\Models\History;
 use App\Models\HistoryDetails;
+use App\Models\VideoComment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -24,6 +27,19 @@ class AudiosController extends Controller
     public function getAudio($id) {
         $data = Audio::query()->find($id);
         return new AudioResource($data);
+    }
+
+    public function setComment(Request $request) {
+        AudioComment::query()->create([
+            'from_user' => $request->user()->uid,
+            'audio_id' => $request->id,
+            'note' => $request->note,
+            'moment' => Carbon::now(),
+        ]);
+        $comments = AudioComment::query()->where('audio_id', $request->id)
+            ->orderBy('moment', 'desc')->get();
+
+        return CommentsResource::collection($comments);
     }
 
     public function saveAudio(Request $request) {

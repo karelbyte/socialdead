@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Models\AudioComment;
 use App\Models\User;
+use App\Models\VideoComment;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +28,10 @@ class IndexAudioResource extends JsonResource
         $sub = $this->user_uid === Auth::user()->uid ? 'Publicastes este audio '. Carbon::parse($this->moment)->diffForHumans()
             :  $user->full_names . ' publico este audio '. Carbon::parse($this->moment)->diffForHumans();
 
+        $commes = AudioComment::query()->where('audio_id',  $this->id)->orderBy('moment', 'desc')->get();
+
+        $resulComments = CommentsResource::collection($commes);
+
         return [
             'cron' => Str::uuid(),
             'user' => new UserSearch($user),
@@ -36,6 +42,7 @@ class IndexAudioResource extends JsonResource
             'subtitle' => $this->subtitle, // $user->full_names . ' publico este audio '. Carbon::parse($this->moment)->diffForHumans(),
             'rating' => $this->rating,
             'thumbs' => $thumbs,
+            'comments' => $resulComments,
             'type' => 3, // AUDIO
         ];
     }

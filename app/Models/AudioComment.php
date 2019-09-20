@@ -30,7 +30,7 @@ class AudioComment extends Model
     /**
      * @var array
      */
-    protected $fillable = ['audio_id', 'from_user', 'note'];
+    protected $fillable = ['audio_id', 'from_user', 'note', 'moment'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

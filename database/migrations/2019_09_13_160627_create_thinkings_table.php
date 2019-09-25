@@ -21,7 +21,7 @@ class CreateThinkingsTable extends Migration
             $table->string('title', 120)->nullable();
             $table->string('subtitle', 120)->nullable();
             $table->tinyInteger('rating')->unsigned()->default(0);
-            $table->string('note', 500);
+            $table->mediumText('note')->nullable();
             $table->tinyInteger('status_id')->unsigned()->default(0);
             $table->tinyInteger('in_history')->unsigned()->default(0);
             $table->bigInteger('history_id')->unsigned()->default(0);

@@ -80,6 +80,7 @@ class VideosController extends Controller
                     'url' =>  $name,
                     'title' => $request->has('title') ? $request->title : 'sin titulo',
                     'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
+                    'note' => $request->note,
                     'status_id' => $request->has('status') ? 1 : 0,
                 ]);
                 return response()->json('Se archivo el video!');
@@ -126,6 +127,7 @@ class VideosController extends Controller
             'status_id' => $request->status_id,
             'in_history' => $request->in_history,
             'moment' => Carbon::now(),
+            'note' => $request->note,
             'history_id' => $request->in_history ? $det->id : 0
         ]);
 

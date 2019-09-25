@@ -42,6 +42,7 @@ class IndexAudioResource extends JsonResource
             'subtitle' => $this->subtitle, // $user->full_names . ' publico este audio '. Carbon::parse($this->moment)->diffForHumans(),
             'rating' => $this->rating,
             'thumbs' => $thumbs,
+            'note' => $this->note,
             'comments' => $resulComments,
             'type' => 3, // AUDIO
         ];

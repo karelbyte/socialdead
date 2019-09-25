@@ -23,7 +23,7 @@ class IndexPhotoResource extends JsonResource
         $user = User::query()->find($this->user_uid);
 
         $sub = $this->user_uid === Auth::user()->uid ? 'Publicastes esta imagen '. Carbon::parse($this->moment)->diffForHumans()
-            :  $user->full_names . ' publico esta  imagen  '. Carbon::parse($this->moment)->diffForHumans();
+            :  $user->full_names . ' publico esta imagen '. Carbon::parse($this->moment)->diffForHumans();
 
         $commes = PhotoComment::query()->where('photo_id',  $this->id)->orderBy('moment', 'desc')->get();
 
@@ -36,10 +36,11 @@ class IndexPhotoResource extends JsonResource
             'moment' => $sub, //(int) Carbon::parse($this->moment)->timestamp,
             'time_ago' => Carbon::parse($this->moment)->diffForHumans(),
             'title' => $this->title,
-            'subtitle' => $this->subtitle, // $user->full_names . ' publico esta  imagen  '. Carbon::parse($this->moment)->diffForHumans(),
+            'subtitle' => $this->subtitle,
             'rating' => $this->rating,
-            'comments' => $resulComments, // PhotoCommentsResource::collection($this->comments),
-            'type' => 1, // IMAGENES
+            'comments' => $resulComments,
+            'note' => $this->note,
+            'type' => 1,
             'url'=> Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $this->url)->encode('data-url', 70)->encoded,
         ];
     }

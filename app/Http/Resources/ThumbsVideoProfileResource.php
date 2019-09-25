@@ -35,6 +35,7 @@ class ThumbsVideoProfileResource extends JsonResource
             'subtitle' =>  $this->subtitle,
             'rating' => $this->rating,
             'thumbs' => $thumbs,
+            'note' => $this->note,
             'status' => (bool) $this->status_id,
             'in_history' => (bool) $this->in_history,
             'history_id' =>  $this->history_id,

@@ -24,9 +24,10 @@ class PhotoResource extends JsonResource
             'title' => $this->title,
             'subtitle' =>  $this->subtitle,
             'rating' => $this->rating,
-            'url'=> $img->encode('data-url')->encoded,
+            'url'=> $img->encode('data-url', 70)->encoded,
             'H' => $img->height(),
             'W' => $img->width(),
+            'note' => $this->note,
             'in_history' => (bool) $this->in_history,
             'history_id' =>  $this->history_id,
             'status' => (bool) $this->status_id

@@ -49,13 +49,14 @@ class PhotosController extends Controller
                 $patch = storage_path('app/public/') . $uid .'/photos';
                 File::exists( $patch) or File::makeDirectory($patch , 0777, true, true);
                 $request->file->storeAs('public/'.$uid .'/photos/', $name);
-                Photo::query()->create([
+                $photo = Photo::query()->create([
                     'user_uid' => $uid,
                     'moment' => Carbon::now(),
                     'url' =>  $name,
                     'title' => $request->has('title') ? $request->title : 'sin titulo',
                     'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
                     'status_id' => $request->has('status') ? 1 : 0,
+                    'note' => $request->note
                 ]);
                 return response()->json('Se archivo la imagen!');
             } else {
@@ -114,6 +115,7 @@ class PhotosController extends Controller
             'status_id' => $request->status_id,
             'in_history' => $request->in_history,
             'moment' => Carbon::now(),
+            'note' => $request->note,
             'history_id' => $historyID
         ]);
         return http_response_code(200);

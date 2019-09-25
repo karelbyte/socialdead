@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Models\AudioComment;
 use App\Models\User;
+use App\Models\VideoComment;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
@@ -20,8 +22,8 @@ class VideoShareResource extends JsonResource
     {
         $str = strlen($this->video->url);
         $pureName = substr($this->video->url, 0,  $str-4);
-        $patch = storage_path('app/public/') . $this->from_user. '/videos/' . $pureName . '.png';
-        if (file_exists(storage_path('app/public/') . $this->from_user . '/videos/' . $pureName . '.png')) {
+        $patch = storage_path('app/public/') . $this->from_user. '/videos/' . $pureName . '.PNG';
+        if (file_exists(storage_path('app/public/') . $this->from_user . '/videos/' . $pureName . '.PNG')) {
             $thumbs  = Image::make($patch )->encode('data-url', 50)->encoded;
         } else {
             $patch = storage_path('app/public/') . '/social/video_aux.png';
@@ -29,16 +31,22 @@ class VideoShareResource extends JsonResource
         }
         $user = User::query()->find($this->from_user);
 
+        $commes = VideoComment::query()->where('video_id',  $this->video->id)->orderBy('moment', 'desc')->get();
+
+        $resulComments = CommentsResource::collection($commes);
+
         return [
             'cron' => Str::uuid(),
             'user' => new UserSearch($user),
             'id' => $this->id,
-            'moment' => (int) Carbon::parse($this->moment)->timestamp,
-            'time_ago' => Carbon::parse($this->moment)->diffForHumans(),
-            'title' => $this->title,
-            'subtitle' => $user->full_names . ' te compartio este video '. Carbon::parse($this->moment)->diffForHumans(),
-            'rating' => $this->rating,
+            'moment' => $user->full_names . ' te compartio este video '. Carbon::parse($this->video->moment)->diffForHumans(),
+            'time_ago' => Carbon::parse($this->video->moment)->diffForHumans(),
+            'title' => $this->video->title,
+            'subtitle' => $this->video->subtitle,
+            'rating' => $this->video->rating,
+            'note' => $this->video->note,
             'thumbs' => $thumbs,
+            'comments' => $resulComments,
             'type' => 2, // VIDEO
         ];
     }

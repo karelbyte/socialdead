@@ -20,7 +20,7 @@ class CreateRemindersTable extends Migration
             $table->date('moment');
             $table->string('title', 120)->nullable();
             $table->string('subtitle', 120)->nullable();
-            $table->string('note', 800)->nullable();
+            $table->mediumText('note')->nullable();
             $table->string('nameto', 120)->nullable();
             $table->string('category', 120)->nullable();
             $table->unsignedTinyInteger('type');

@@ -17,7 +17,7 @@ class ThumbsPhotoResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'url'=> Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $this->url)->resize(150, 150)->encode('data-url', 50)->encoded,
+            'url'=> Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $this->url)->encode('data-url', 50)->encoded,
         ];
     }
 }

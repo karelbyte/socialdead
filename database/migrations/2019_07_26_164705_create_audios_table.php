@@ -20,6 +20,7 @@ class CreateAudiosTable extends Migration
             $table->dateTime('moment');
             $table->string('title', 120)->nullable();
             $table->string('subtitle', 120)->nullable();
+            $table->mediumText('note')->nullable();
             $table->tinyInteger('rating')->unsigned()->default(0);
             $table->string('url', 120)->nullable();
             $table->tinyInteger('status_id')->unsigned()->default(0);

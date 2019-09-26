@@ -50,6 +50,7 @@ class NotificationsController extends Controller
             'status_id' => 1 // NO VISTO
         ]);
         // ENVIANDO NOTIFICACION POR EMAIL SI ESTA ACTIVA ESA CONDICION
+        
         if ($data->toUser->settingNotifications->notification_email === 1) {
             $data_email = [
                 'from' => $data->fromUser->full_names,
@@ -68,6 +69,14 @@ class NotificationsController extends Controller
     }
 
     public function getSettings(Request $request) {
+        if ($request->user()->settingNotifications === null) {
+            $request->user()->settingNotifications()->create([
+                'notification_sound' => 1,
+                'notification_email' => 1,
+                'notification_reminders' => 1,
+                'chat_sound' => 1,
+            ]);
+        }
         return new NotifySettings($request->user()->settingNotifications);
     }
 

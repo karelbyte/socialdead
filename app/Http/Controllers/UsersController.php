@@ -132,7 +132,12 @@ class UsersController extends Controller
             'secret' => $data['secret']
         ]);
 
-        $user->settingNotifications()->create(['notification_sound' => 1]);
+        $user->settingNotifications()->create([
+            'notification_sound' => 1,
+            'notification_email' => 1,
+            'notification_reminders' => 1,
+            'chat_sound' => 1,
+        ]);
 
         $client = new \GuzzleHttp\Client();
 

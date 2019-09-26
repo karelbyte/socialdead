@@ -30,6 +30,22 @@ class ProfilesController extends Controller
     public function updateProfile(Request $request)
     {
       $user = User::query()->find($request->user()->uid);
+
+        $img = Image::make($request->img)->resize(400, 300);
+
+        $ext = $request->file('img')->getClientOriginalExtension();
+
+        $patch = storage_path('app/public/') .$request->user()->uid.'/profile/avatar';
+
+        if (File::exists($patch)) {
+            Storage::disk('public')->deleteDirectory($request->user()->uid.'/profile/avatar');
+            File::makeDirectory($patch , 0777, true, true);
+        } else {
+            File::makeDirectory($patch , 0777, true, true);
+        }
+        $name = Carbon::now()->timestamp;
+        $img->save($patch. '/'. $name. '.' . $ext);
+
       $user->update([
             'full_names' => $request->full_names,
             'email' =>$request->email,
@@ -42,12 +58,13 @@ class ProfilesController extends Controller
             'birthplace' =>$request->birthplace,
             'country' =>$request->country,
             'who_you_are' =>$request->who_you_are,
-            'website' =>$request->website,
+            'website' => $request->website,
             'facebook' =>$request->facebook,
             'twitter' =>$request->twitter,
-            'religion_id' =>$request->religion['id'],
-            'politics_id' =>$request->politics['id'],
+            'religion_id' =>$request->religion_id === null ?? 0,
+            'politics_id' =>$request->politics === null ?? 0,
             'occupation' =>$request->occupation,
+            'avatar' => $name .'.' .$ext
         ]);
 
         return new UserOnly($user);
@@ -68,7 +85,7 @@ class ProfilesController extends Controller
             File::makeDirectory($patch , 0777, true, true);
         }
         $name = Carbon::now()->timestamp;
-        $img->save($patch. '/'. $name. '.' . $ext , 70);
+        $img->save($patch. '/'. $name. '.' . $ext);
 
         $request->user()->update(['avatar' => $name .'.' .$ext]);
 

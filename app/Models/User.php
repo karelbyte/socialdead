@@ -100,6 +100,10 @@ class User extends Authenticatable
         return $this->hasMany(Video::class, 'user_uid', 'uid')->orderBy('videos.moment', 'desc');
     }
 
+    public function Store() {
+        return $this->hasOne(UserStore::class, 'user_uid', 'uid');
+    }
+
     public function Audios() {
         return $this->hasMany(Audio::class, 'user_uid', 'uid')->orderBy('audios.moment', 'desc');
     }

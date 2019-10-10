@@ -23,7 +23,7 @@ class Video extends Model
        $patch = $this->user_uid .'/videos/'.$this->url;
        $str = strlen($this->url);
        $pureName = substr($this->url, 0,  $str-4);
-       $patch_tumbs =  $this->user_uid .'/videos/'.  $pureName . '.png';
+       $patch_tumbs =  $this->user_uid .'/videos/T'.  $pureName . '.PNG';
        History::query()->where('id', $this->history_id)->delete();
        Storage::disk('public')->delete($patch);
        Storage::disk('public')->delete($patch_tumbs);

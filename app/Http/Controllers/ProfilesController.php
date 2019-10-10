@@ -29,7 +29,9 @@ class ProfilesController extends Controller
 
     public function updateProfile(Request $request)
     {
-      $user = User::query()->find($request->user()->uid);
+       // dd(is_null($request->phone) ? '' : $request->phone);
+
+        $user = User::query()->find($request->user()->uid);
 
         $img = Image::make($request->img)->resize(400, 300);
 
@@ -48,22 +50,21 @@ class ProfilesController extends Controller
 
       $user->update([
             'full_names' => $request->full_names,
-            'email' =>$request->email,
-            'phone' =>$request->phone,
-            'address' =>$request->address,
-            'nif' =>$request->nif,
-            'birthdate' =>$request->birthdate,
+            'phone' => is_null($request->phone) ? '' : $request->phone,
+            'address' => is_null($request->address) ? '' : $request->address,
+            'nif' => is_null($request->nif) ? '' :$request->nif,
+            'birthdate' => $request->birthdate,
             'sex_id' => $request->sex,
-            'civil_status_id' => $request->civil,
-            'birthplace' =>$request->birthplace,
-            'country' =>$request->country,
-            'who_you_are' =>$request->who_you_are,
-            'website' => $request->website,
-            'facebook' =>$request->facebook,
-            'twitter' =>$request->twitter,
-            'religion_id' =>$request->religion_id === null ?? 0,
-            'politics_id' =>$request->politics === null ?? 0,
-            'occupation' =>$request->occupation,
+            'civil_status_id' => is_null($request->civil_status_id) ? 1 : $request->civil_status_id,
+            'birthplace' => is_null($request->birthplace) ? '' : $request->birthplace,
+            'country' => is_null($request->country) ? '' : $request->country,
+            'who_you_are' => is_null($request->who_you_are) ? '' : $request->who_you_are,
+            'website' => is_null($request->website) ? '' : $request->website,
+            'facebook' => is_null($request->facebook) ? '' : $request->facebook,
+            'twitter' => is_null($request->twitter) ? '' : $request->twitter,
+            'religion_id' => is_null($request->religion) ? 0 : $request->religion,
+            'politics_id' => is_null($request->politics) ? 0 : $request->politics,
+            'occupation' => is_null($request->occupation) ? '' :$request->occupation,
             'avatar' => $name .'.' .$ext
         ]);
 
@@ -72,7 +73,7 @@ class ProfilesController extends Controller
 
     public function updateProfileAvatar(Request $request):UserOnly {
 
-        $img = Image::make($request->img)->resize(400, 300);
+      /*  $img = Image::make($request->img)->resize(400, 300);
 
         $ext = $request->file('img')->getClientOriginalExtension();
 
@@ -89,7 +90,7 @@ class ProfilesController extends Controller
 
         $request->user()->update(['avatar' => $name .'.' .$ext]);
 
-        return new UserOnly($request->user());
+        return new UserOnly($request->user()); */
     }
 
 

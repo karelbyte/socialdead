@@ -69,7 +69,7 @@ class IndexController extends Controller
 
     public function getWall (Request $request) {
 
-        $data = new Collection();
+       $data = new Collection();
 
        $Photos = Photo::query()
             ->where('user_uid', $request->user()->uid)

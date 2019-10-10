@@ -26,4 +26,9 @@ class Contact extends Model
     {
         return $this->belongsTo(Kin::class, 'kin_id', 'id');
     }
+
+    public function scopeConstable($query)
+    {
+        return $query->where('constable', 2);
+    }
 }

@@ -40,6 +40,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('update-password', 'UsersController@updatePassword');
         Route::post('update-email', 'UsersController@updateEmail');
         Route::post('exit', 'UsersController@exit');
+        Route::get('public-data/{uid}', 'UsersController@getDataPublic');
     });
 
     Route::prefix('notifications')->group(function () {
@@ -52,8 +53,9 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('settings', 'NotificationsController@getSettings');
     });
 
-    Route::prefix('constable')->group(function () {
+    Route::prefix('constables')->group(function () {
         Route::post('confirm', 'ConstableController@setConfirm');
+        Route::post('list', 'ConstableController@getConstables');
     });
 
     Route::prefix('contacts')->group(function () {
@@ -63,6 +65,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('list-kins', 'ContactsController@allKins');
         Route::post('update', 'ContactsController@setContactsUpdate');
         Route::post('kill', 'ContactsController@contactDelete');
+
     });
 
     Route::prefix('profile')->group(function () {
@@ -138,6 +141,21 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('get-types', 'RemindersController@getTypes');
         Route::post('comment-save', 'RemindersController@setComment');
     });
+
+    Route::prefix('capsules')->group(function () {
+        Route::post('lists', 'CapsulesController@getList');
+        Route::post('save', 'CapsulesController@save');
+        Route::post('kill', 'CapsulesController@delete');
+        Route::post('update', 'CapsulesController@update');
+        Route::post('capsule-close', 'CapsulesController@capsuleClose');
+    });
+
+    Route::prefix('files')->group(function () {
+        Route::post('lists', 'FilesController@getAllFiles');
+        Route::post('get-file', 'FilesController@getFile');
+        Route::post('kill', 'FilesController@delete');
+    });
+
 
     Route::prefix('thinkings')->group(function () {
         Route::post('lists', 'ThinkingsController@getList');

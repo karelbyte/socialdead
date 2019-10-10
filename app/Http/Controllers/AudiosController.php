@@ -43,45 +43,52 @@ class AudiosController extends Controller
     }
 
     public function saveAudio(Request $request) {
-        try {
-            $uid = $request->user()->uid;
-            $file = $request->file;
-            $ext = strtoupper($file->getClientOriginalExtension());
-            $name = Carbon::now()->timestamp . '.' . $ext;
-            $str = strlen($name);
-            $pureName = substr($name, 0,  $str-4);
-            if ( $ext === 'MP3' || $ext === 'M4A' ||   $ext === 'AMR') {
-                $patch = storage_path('app/public/') . $uid .'/audios';
-                File::exists( $patch) or File::makeDirectory($patch , 0777, true, true);
-                $request->file->storeAs('public/'.$uid .'/audios/', $name);
-                if ($ext !== 'MP3') {
-                    \FFMpeg::fromDisk('public')
-                        ->open($uid .'/audios/' . $name)
-                        ->export()
-                        ->inFormat(new \FFMpeg\Format\Audio\Mp3())
-                        ->toDisk('public')
-                        ->save($uid .'/audios/' . $pureName . '.mp3');
-                    $patch =  $uid .'/audios/'. $name;
-                    Storage::disk('public')->delete($patch);
-                    $name =  $pureName . '.MP3';
-                }
-                Audio::query()->create([
-                    'user_uid' => $uid,
-                    'moment' => Carbon::now(),
-                    'url' =>  $name,
-                    'title' => $request->has('title') ? $request->title : 'sin titulo',
-                    'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
-                    'note' => $request->note,
-                    'status_id' => $request->has('status') ? 1 : 0,
-                ]);
-                return response()->json('Se archivo el audio!');
-            } else {
-                return response()->json('El archivo no esta permitido', 500);
-            }
+        $uid = $request->user()->uid;
+        $file = $request->file;
+        if ( $this->store($uid, $request->file->getSize())) {
+            try {
 
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
+                $ext = strtoupper($file->getClientOriginalExtension());
+                $name = Carbon::now()->timestamp . '.' . $ext;
+                $str = strlen($name);
+                $pureName = substr($name, 0,  $str-4);
+                if ( $ext === 'MP3' || $ext === 'M4A' ||   $ext === 'AMR') {
+                    $patch = storage_path('app/public/') . $uid .'/audios';
+                    File::exists( $patch) or File::makeDirectory($patch , 0777, true, true);
+                    $request->file->storeAs('public/'.$uid .'/audios/', $name);
+                    if ($ext !== 'MP3') {
+                        \FFMpeg::fromDisk('public')
+                            ->open($uid .'/audios/' . $name)
+                            ->export()
+                            ->inFormat(new \FFMpeg\Format\Audio\Mp3())
+                            ->toDisk('public')
+                            ->save($uid .'/audios/' . $pureName . '.mp3');
+                        $patch =  $uid .'/audios/'. $name;
+                        Storage::disk('public')->delete($patch);
+                        $name =  $pureName . '.MP3';
+                    }
+                    Audio::query()->create([
+                        'user_uid' => $uid,
+                        'moment' => Carbon::now(),
+                        'url' =>  $name,
+                        'title' => $request->has('title') ? $request->title : 'sin titulo',
+                        'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
+                        'note' => $request->note,
+                        'status_id' => $request->has('status') ? 1 : 0,
+                    ]);
+                    return response()->json('Se archivo el audio!');
+                } else {
+                    return response()->json('El archivo no esta permitido', 500);
+                }
+
+            } catch (\Exception $e) {
+                return response()->json($e->getMessage(), 500);
+            }
+        } else {
+            return response()->json('El tamaño del archivo se sobrepasa el limite de megas que tiene contratado, le sugerimos adquirir un extensión de almacenamiento!', 500);
         }
+
+
     }
 
     public function destroyAudio($id) {

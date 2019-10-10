@@ -10,12 +10,15 @@ use App\Models\HistoryDetails;
 use App\Models\Photo;
 use App\Models\PhotoComment;
 use App\Models\PhotoShare;
+use App\Traits\UserFileStore;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 class PhotosController extends Controller
 {
+    use UserFileStore;
+
     public function getPhotosLists(Request $request) {
         $data = $request->user()->photos;
         return  PhotoResource::collection( $data);
@@ -40,32 +43,38 @@ class PhotosController extends Controller
     }
 
     public function savePhoto(Request $request) {
-        try {
-            $uid = $request->user()->uid;
-            $file = $request->file;
-            $ext = strtoupper($file->getClientOriginalExtension());
-            $name = Carbon::now()->timestamp . '.'.$ext;
-            if ($ext === 'JPG' || $ext === 'JPEG' || $ext === 'PNG') {
-                $patch = storage_path('app/public/') . $uid .'/photos';
-                File::exists( $patch) or File::makeDirectory($patch , 0777, true, true);
-                $request->file->storeAs('public/'.$uid .'/photos/', $name);
-                $photo = Photo::query()->create([
-                    'user_uid' => $uid,
-                    'moment' => Carbon::now(),
-                    'url' =>  $name,
-                    'title' => $request->has('title') ? $request->title : 'sin titulo',
-                    'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
-                    'status_id' => $request->has('status') ? 1 : 0,
-                    'note' => $request->note
-                ]);
-                return response()->json('Se archivo la imagen!');
-            } else {
-                return response()->json('El archivo no esta permitido', 500);
-            }
+        $uid = $request->user()->uid;
+        $file = $request->file;
+        if ( $this->store($uid, $request->file->getSize())) {
+            try {
+                $ext = strtoupper($file->getClientOriginalExtension());
+                $name = Carbon::now()->timestamp . '.'.$ext;
+                if ($ext === 'JPG' || $ext === 'JPEG' || $ext === 'PNG') {
+                    $patch = storage_path('app/public/') . $uid .'/photos';
+                    File::exists( $patch) or File::makeDirectory($patch , 0777, true, true);
+                    $request->file->storeAs('public/'.$uid .'/photos/', $name);
+                    $photo = Photo::query()->create([
+                        'user_uid' => $uid,
+                        'moment' => Carbon::now(),
+                        'url' =>  $name,
+                        'title' => $request->has('title') ? $request->title : 'sin titulo',
+                        'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
+                        'status_id' => $request->has('status') ? 1 : 0,
+                        'note' => $request->note
+                    ]);
+                    return response()->json('Se archivo la imagen!');
+                } else {
+                    return response()->json('El archivo no esta permitido', 500);
+                }
 
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
+            } catch (\Exception $e) {
+                return response()->json($e->getMessage(), 500);
+            }
+        } else {
+            return response()->json('El tamaño del archivo se sobrepasa el limite de megas que tiene contratado, le sugerimos adquirir un extensión de almacenamiento!', 500);
+
         }
+
     }
 
     public function destroyPhoto($id) {

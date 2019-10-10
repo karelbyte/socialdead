@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Events\UpdateUserStatusEvent;
 use App\Http\Requests\MailUpdateRequest;
 use App\Http\Requests\UserCreateRequest;
+use App\Http\Resources\IndexAudioResource;
+use App\Http\Resources\IndexPhotoResource;
+use App\Http\Resources\IndexThinKingResource;
+use App\Http\Resources\IndexVideoResource;
 use App\Http\Resources\UserOnly;
 use App\Http\Resources\UserSearch;
 use App\Jobs\SendEmailJob;
@@ -12,9 +16,14 @@ use App\Mail\UserAccountConfirm;
 use App\Mail\UserNotification;
 use App\Mail\UserNotificationToken;
 use App\Mail\UserWelcome;
+use App\Models\Audio;
+use App\Models\Photo;
+use App\Models\Thinking;
 use App\Models\User;
 use App\Models\UserStatus;
+use App\Models\Video;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -132,6 +141,11 @@ class UsersController extends Controller
             'secret' => $data['secret']
         ]);
 
+        $user->store()->create([
+            'gigas' => 2,
+            'inuse' => 0
+        ]);
+
         $user->settingNotifications()->create([
             'notification_sound' => 1,
             'notification_email' => 1,
@@ -164,6 +178,7 @@ class UsersController extends Controller
             'user' => new UserOnly($user),
             'passport' => json_decode($response->getBody(), true)
         ];
+
         return $data;
     }
 
@@ -195,5 +210,53 @@ class UsersController extends Controller
     public function updateEmail(MailUpdateRequest $request) {
         $request->user()->update(['email' => $request->email]);
         return http_response_code(200);
+    }
+
+    public function getDataPublic($uid) {
+
+        $data = new Collection();
+
+        $Photos = Photo::query()
+            ->where('user_uid', $uid)
+            ->where('photos.status_id', 1)
+            ->orderBy( 'moment', 'desc')
+            ->get();
+        foreach ($Photos as $photo) {
+            $data->push(new IndexPhotoResource($photo));
+        }
+
+        $Videos = Video::query()
+            ->where('user_uid', $uid)
+            ->where('videos.status_id', 1)
+            ->orderBy( 'moment', 'desc')
+            ->select( 'videos.user_uid as uid', 'videos.*')
+            ->get();
+        foreach ($Videos as $Video) {
+            $data->push(new IndexVideoResource($Video));
+        }
+
+        $Audios = Audio::query()
+            ->where('user_uid', $uid)
+            ->where('audios.status_id', 1)
+            ->orderBy( 'moment', 'desc')
+            ->select( 'audios.user_uid as uid', 'audios.*')
+            ->get();
+        foreach ($Audios as $Audio) {
+            $data->push(new IndexAudioResource($Audio));
+        }
+
+        $ThingKingsYour = Thinking::query()
+            ->where('user_uid', $uid)
+            ->orderBy( 'moment', 'desc')
+            ->get();
+
+        foreach ($ThingKingsYour as $ThingYour) {
+            $data->push(new IndexThinKingResource($ThingYour));
+        }
+
+        // ORGANIZANDO
+        $sorted = $data->sortByDesc('moment');
+
+        return $sorted->values()->all();
     }
 }

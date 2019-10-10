@@ -13,6 +13,7 @@ use App\Models\HistoryDetails;
 use App\Models\Video;
 use App\Models\VideoComment;
 use App\Models\VideoShare;
+use App\Traits\UserFileStore;
 use Carbon\Carbon;
 use FFMpeg;
 use FFMpeg\Format\Video\X264;
@@ -22,6 +23,8 @@ use Illuminate\Support\Facades\Storage;
 
 class VideosController extends Controller
 {
+    use UserFileStore;
+
     public function getVideoLists(Request $request) {
         $data = $request->user()->videos;
         return  ThumbsVideoProfileResource::collection( $data);
@@ -46,56 +49,63 @@ class VideosController extends Controller
     }
 
     public function saveVideos(Request $request) {
-        try {
-            $uid = $request->user()->uid;
-            $file = $request->file;
-            $ext = strtoupper($file->getClientOriginalExtension());
-            $name = Carbon::now()->timestamp . '.' . $ext;
-            $str = strlen($name);
-            $pureName = substr($name, 0,  $str-4);
-            if ( $ext === 'MP4' || $ext === 'MOV' ) {
-                $patch = storage_path('app/public/') . $uid .'/videos';
-                File::exists( $patch) or File::makeDirectory($patch , 0777, true, true);
-                $request->file->storeAs('public/'.$uid .'/videos/', $name);
-                if ($ext === 'MOV') {
+
+        $uid = $request->user()->uid;
+        $file = $request->file;
+        if ( $this->store($uid, $request->file->getSize())) {
+            try {
+
+                $ext = strtoupper($file->getClientOriginalExtension());
+                $name = Carbon::now()->timestamp . '.' . $ext;
+                $str = strlen($name);
+                $pureName = substr($name, 0,  $str-4);
+                if ( $ext === 'MP4' || $ext === 'MOV' ) {
+                    $patch = storage_path('app/public/') . $uid .'/videos';
+                    File::exists( $patch) or File::makeDirectory($patch , 0777, true, true);
+                    $request->file->storeAs('public/'.$uid .'/videos/', $name);
+                    if ($ext === 'MOV') {
+                        FFMpeg::fromDisk('public')
+                            ->open($uid .'/videos/' . $name)
+                            ->export()
+                            ->inFormat(new X264('libmp3lame', 'libx264'))
+                            ->toDisk('public')
+                            ->save($uid .'/videos/' . $pureName . '.MP4');
+                        $patch =  $uid .'/videos/'. $name;
+                        Storage::disk('public')->delete($patch);
+                        $name =  $pureName . '.MP4';
+                    }
                     FFMpeg::fromDisk('public')
                         ->open($uid .'/videos/' . $name)
+                        ->getFrameFromSeconds(3)
                         ->export()
-                        ->inFormat(new X264('libmp3lame', 'libx264'))
                         ->toDisk('public')
-                        ->save($uid .'/videos/' . $pureName . '.MP4');
-                    $patch =  $uid .'/videos/'. $name;
-                    Storage::disk('public')->delete($patch);
-                    $name =  $pureName . '.MP4';
+                        ->save($uid .'/videos/T' . $pureName . '.PNG');
+                    Video::query()->create([
+                        'user_uid' => $uid,
+                        'moment' => Carbon::now(),
+                        'url' =>  $name,
+                        'title' => $request->has('title') ? $request->title : 'sin titulo',
+                        'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
+                        'note' => $request->note,
+                        'status_id' => $request->has('status') ? 1 : 0,
+                    ]);
+                    return response()->json('Se archivo el video!');
+                } else {
+                    return response()->json('El archivo no esta permitido', 500);
                 }
-                FFMpeg::fromDisk('public')
-                    ->open($uid .'/videos/' . $name)
-                    ->getFrameFromSeconds(3)
-                    ->export()
-                    ->toDisk('public')
-                    ->save($uid .'/videos/' . $pureName . '.PNG');
-                Video::query()->create([
-                    'user_uid' => $uid,
-                    'moment' => Carbon::now(),
-                    'url' =>  $name,
-                    'title' => $request->has('title') ? $request->title : 'sin titulo',
-                    'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
-                    'note' => $request->note,
-                    'status_id' => $request->has('status') ? 1 : 0,
-                ]);
-                return response()->json('Se archivo el video!');
-            } else {
-                return response()->json('El archivo no esta permitido', 500);
-            }
 
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
+            } catch (\Exception $e) {
+                return response()->json($e->getMessage(), 500);
+            }
+        } else {
+            return response()->json('El tamaño del archivo se sobrepasa el limite de megas que tiene contratado, le sugerimos adquirir un extensión de almacenamiento!', 500);
         }
+
     }
 
     public function destroyVideo($id) {
-        $photo = Video::query()->find($id);
-        $photo->videoEraser();
+        $video = Video::query()->find($id);
+        $video->videoEraser();
         return http_response_code(200);
     }
 

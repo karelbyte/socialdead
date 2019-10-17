@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class DeleteOutTimeAccount extends Command
 {
@@ -41,9 +42,18 @@ class DeleteOutTimeAccount extends Command
      */
     public function handle()
     {
-        // ELIMINAR CUENTAS PASADO 10 DIAS
-         User::query()->whereNull('email_verified_at')
+
+        $users = User::query()->whereNull('email_verified_at')
             ->whereRaw('datediff(now(), created_at) >= 10' )
-            ->delete();
+            ->get();
+
+        foreach ($users as $user) {
+            Storage::disk('public')->delete($user->uid);
+        }
+
+            // ELIMINAR CUENTAS PASADO 10 DIAS
+            User::query()->whereNull('email_verified_at')
+                ->whereRaw('datediff(now(), created_at) >= 10' )
+                ->delete();
     }
 }

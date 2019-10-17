@@ -145,15 +145,18 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('capsules')->group(function () {
         Route::post('lists', 'CapsulesController@getList');
         Route::post('save', 'CapsulesController@save');
+        Route::post('update', 'CapsulesControlle@update');
         Route::post('kill', 'CapsulesController@delete');
         Route::post('update', 'CapsulesController@update');
-        Route::post('capsule-close', 'CapsulesController@capsuleClose');
+        Route::post('activate', 'CapsulesController@activate');
     });
 
     Route::prefix('files')->group(function () {
         Route::post('lists', 'FilesController@getAllFiles');
         Route::post('get-file', 'FilesController@getFile');
         Route::post('kill', 'FilesController@delete');
+        Route::post('up-store', 'FilesController@upStore');
+
     });
 
 

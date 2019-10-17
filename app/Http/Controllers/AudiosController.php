@@ -11,6 +11,7 @@ use App\Models\AudioShare;
 use App\Models\History;
 use App\Models\HistoryDetails;
 use App\Models\VideoComment;
+use App\Traits\UserFileStore;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Storage;
 
 class AudiosController extends Controller
 {
+ use UserFileStore;
 
     public function getAudiosLists(Request $request) {
         $data = $request->user()->audios;
@@ -45,7 +47,8 @@ class AudiosController extends Controller
     public function saveAudio(Request $request) {
         $uid = $request->user()->uid;
         $file = $request->file;
-        if ( $this->store($uid, $request->file->getSize())) {
+        $isTrueStore = $this->store($uid, $request->file->getSize());
+        if ( $isTrueStore['pass']) {
             try {
 
                 $ext = strtoupper($file->getClientOriginalExtension());
@@ -75,6 +78,7 @@ class AudiosController extends Controller
                         'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
                         'note' => $request->note,
                         'status_id' => $request->has('status') ? 1 : 0,
+                        'size' => $isTrueStore['size']
                     ]);
                     return response()->json('Se archivo el audio!');
                 } else {

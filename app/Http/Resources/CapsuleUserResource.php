@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 class CapsuleUserResource extends JsonResource
@@ -17,37 +18,58 @@ class CapsuleUserResource extends JsonResource
      */
     public function toArray($request)
     {
-        $user = User::query()->find($this->constables[0]['user_uid']);
+
+       /* $user = User::query()->find($this->constables[1]['user_uid']);
+
         $constable1 = new UserOnly($user);
 
         if (count($this->constables) > 1) {
-            $user = User::query()->find($this->constables[1]['user_uid']);
-            $constable2 = new UserOnly($user);
+            $user1 = User::query()->find($this->constables[1]['user_uid']);
+            $constable2 = $user1->uid;
         } else {
             $constable2 = null;
-        }
+        }*/
 
         $emails = (count($this->emails) >0) ? $this->emails->map(function ($itm) {
-        return [
-            'id' => $itm['id'],
-            'value'=> $itm['email']
-        ];}) : [];
+            return [
+                'id' => $itm['id'],
+                'value'=> $itm['email']
+            ];}) : [[
+            'id' =>'534645457u4574',
+            'value'=> ''
+        ]];
 
-        $patch = storage_path('app/public/') . '/social/capsule.png';
-        $thumbs  = Image::make($patch )->encode('data-url',90)->encoded;
+        $filesStore = Storage::disk('public')->files( $this->user_uid .'/capsules/capsule'. $this->id);
+
+        $files = collect($filesStore)->map( function ($f) {
+            return ['name' => basename($f), 'type' => 'save'];
+        });
+
+        $constables = $this->constables->pluck('user_uid');
 
         return [
             'id' => $this->id,
-            'opendate' => $this->opendate,
-            'time_ago' => Carbon::parse($this->opendate)->diffForHumans(),
+            'moment' => Carbon::parse($this->opendate)->format('d-m-Y'),
+            'opendate' =>$this->opendate,
+            'time_ago' =>  Carbon::parse($this->opendate)->diffForHumans(null, false, false, 2),
             'title' => $this->title,
             'subtitle' =>  $this->subtitle,
             'note' => $this->note,
-            'constable1' => $constable1,
-            'constable2' =>   $constable2,
+            'constable1' => isset($constables[0]) ? $constables[0] : '',
+            'constable2' => isset($constables[1]) ? $constables[1] : '',
             'emails' => $emails,
+            'images' => $this->photos()->pluck('item_id'),
+            'medias' => $this->medias->map(function ($itm) {
+                return [
+                    'type' => $itm->type,
+                    'id' => $itm->item_id
+                ];
+            }),
+            'files' => $files,
+            'users' => $this->shares()->pluck('to_user'),
             'recurrent' => (bool) $this->recurrent,
-             'thumbs' => $thumbs
+            'activate' =>  $this->activate
         ];
+
     }
 }

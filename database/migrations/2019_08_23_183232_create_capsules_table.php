@@ -18,11 +18,11 @@ class CreateCapsulesTable extends Migration
             $table->uuid('user_uid');
             $table->foreign('user_uid')->references('uid')->on('users')->onDelete('cascade');
             $table->date('moment');
-            $table->string('title', 120)->nullable();
-            $table->string('subtitle', 120)->nullable();
+            $table->string('title', 800)->nullable();
+            $table->string('subtitle', 400)->nullable();
             $table->mediumText('note')->nullable();
             $table->date('opendate');
-            $table->unsignedTinyInteger('security');
+            $table->unsignedTinyInteger('activate')->default(0);
             $table->unsignedTinyInteger('recurrent');
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';

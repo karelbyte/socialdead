@@ -26,6 +26,7 @@ class CreateAudiosTable extends Migration
             $table->tinyInteger('status_id')->unsigned()->default(0);
             $table->tinyInteger('in_history')->unsigned()->default(0);
             $table->bigInteger('history_id')->unsigned()->default(0);
+            $table->decimal('inuse', 10, 4);
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';

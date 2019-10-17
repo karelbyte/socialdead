@@ -25,13 +25,19 @@ trait UserFileStore
      }
 
      if (($fileSize + $inStore->inuse) > ($inStore->gigas * 1000)) {
-         return false;
+         return ['pass' => false];
      } else {
          $fix =  round(($fileSize), 4);
          $inStore->inuse +=  $fix;
          $inStore->save();
-         return true;
+         return ['pass' => true, 'size' =>  $fileSize];
      }
+ }
+
+ public function restStore($uid, $size) {
+     $inStore = UserStore::query()->where('user_uid', $uid)->first();
+     $inStore->inuse -= $size;
+     $inStore->save();
  }
 
 }

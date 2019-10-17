@@ -16,7 +16,7 @@ class Capsule extends Model
     /**
      * @var array
      */
-    protected $fillable = ['user_uid', 'moment', 'title', 'subtitle', 'note', 'opendate', 'security', 'recurrent'];
+    protected $fillable = ['user_uid', 'moment', 'title', 'subtitle', 'note', 'opendate', 'activate', 'recurrent'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -44,6 +44,11 @@ class Capsule extends Model
         return $this->hasMany(CapsuleDetail::class, 'capsule_id', 'id')->where('type', 1);
     }
 
+    public function medias()
+    {
+        return $this->hasMany(CapsuleDetail::class, 'capsule_id', 'id')->whereIn('type', [1, 2]);
+    }
+
     public function audios()
     {
         return $this->hasMany(CapsuleDetail::class, 'capsule_id', 'id')->where('type', 2);
@@ -67,6 +72,15 @@ class Capsule extends Model
         return $this->hasOne(User::class);
     }
 
+
+    public function keyCypher()
+    {
+        $key = '';
+        foreach ($this->constables as $constable) {
+            $key .= $constable->key;
+        }
+        return $key;
+    }
 
     public $timestamps = false;
 }

@@ -45,7 +45,8 @@ class PhotosController extends Controller
     public function savePhoto(Request $request) {
         $uid = $request->user()->uid;
         $file = $request->file;
-        if ( $this->store($uid, $request->file->getSize())) {
+        $isTrueStore = $this->store($uid, $request->file->getSize());
+        if ($isTrueStore['pass']) {
             try {
                 $ext = strtoupper($file->getClientOriginalExtension());
                 $name = Carbon::now()->timestamp . '.'.$ext;
@@ -60,7 +61,8 @@ class PhotosController extends Controller
                         'title' => $request->has('title') ? $request->title : 'sin titulo',
                         'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
                         'status_id' => $request->has('status') ? 1 : 0,
-                        'note' => $request->note
+                        'note' => $request->note,
+                        'size' => $isTrueStore['size']
                     ]);
                     return response()->json('Se archivo la imagen!');
                 } else {

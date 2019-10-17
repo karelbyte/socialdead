@@ -52,7 +52,8 @@ class VideosController extends Controller
 
         $uid = $request->user()->uid;
         $file = $request->file;
-        if ( $this->store($uid, $request->file->getSize())) {
+        $isTrueStore = $this->store($uid, $request->file->getSize());
+        if ( $isTrueStore['pass']) {
             try {
 
                 $ext = strtoupper($file->getClientOriginalExtension());
@@ -88,6 +89,7 @@ class VideosController extends Controller
                         'subtitle' => $request->has('subtitle') ? $request->subtitle :  'sin subtitulo',
                         'note' => $request->note,
                         'status_id' => $request->has('status') ? 1 : 0,
+                        'size' => $isTrueStore['size']
                     ]);
                     return response()->json('Se archivo el video!');
                 } else {

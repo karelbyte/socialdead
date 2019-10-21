@@ -21,7 +21,8 @@ class CreateNotificationsTable extends Migration
             $table->tinyInteger('type_id')->unsigned();
             $table->tinyInteger('status_id')->unsigned();
             $table->dateTime('moment');
-            $table->string('note', 120)->nullable();
+            $table->string('note', 520)->nullable();
+            $table->string('data', 520)->nullable();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';

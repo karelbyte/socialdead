@@ -20,6 +20,11 @@ class NotificationsController extends Controller
         return http_response_code(200);
     }
 
+    public function offNotification(Request $request) {
+        $request->user()->notifications()->where('id', $request->notification)->update(['status_id' => 3]);
+        return http_response_code(200);
+    }
+
     public function getNotificatios(Request $request) {
         $notifications =  $request->user()->notifications;
         $data = [

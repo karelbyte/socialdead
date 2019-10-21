@@ -187,7 +187,7 @@ class RemindersController extends Controller
         }
         $reminder->emails()->delete();
 
-        $da =  date('Y-m-d', strtotime($item['moment']));
+        $da = date('Y-m-d', strtotime($item['moment']));
         foreach ($item['emails'] as $email) {
             if ($email['value'] !== null) {
                 $remi = $reminder->emails()->create([

@@ -48,6 +48,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('list', 'NotificationsController@getNotificatios');
         Route::post('all', 'NotificationsController@getNotificatiosAll');
         Route::post('off-all', 'NotificationsController@offAllNotification');
+        Route::post('off', 'NotificationsController@offNotification');
         Route::post('eraser', 'NotificationsController@eraser');
         Route::post('update-settings', 'NotificationsController@updateNotificationsSettings');
         Route::post('settings', 'NotificationsController@getSettings');

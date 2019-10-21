@@ -28,7 +28,7 @@ class NotifyFull extends JsonResource
             'note' =>  $this->note,
             'moment'=> Carbon::parse($this->moment)->format('d-m-Y H:i'),
             'occupation' =>  $this->fromUser->occupation,
-            'type' => 1 // AMISTAD
+            'type' =>  $this->type_id
         ];
     }
 }

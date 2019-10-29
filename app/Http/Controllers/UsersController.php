@@ -59,7 +59,7 @@ class UsersController extends Controller
               'user_name' => $user->full_names,
               'url' => url('/')
           ];
-          dispatch(new SendEmailJob($user->email, new UserWelcome($mail_data)));
+          SendEmailJob::dispatch($user->email, new UserWelcome($mail_data))->onConnection('mails');
           return view('social.user_account_confirm_success');
       }
     }
@@ -77,7 +77,7 @@ class UsersController extends Controller
                 'to' => $user->full_names,
                 'note' => 'Recuperación de contraseña finalizada con exito!'
             ];
-            dispatch(new SendEmailJob($user->email, new UserNotification($data_email)));
+            SendEmailJob::dispatch($user->email, new UserNotification($data_email))->onConnection('mails');
             return response('Recuperación de clave exitosa!');
         }
     }
@@ -108,7 +108,7 @@ class UsersController extends Controller
                 'token' => $user->secret,
                 'url' => url('/')
             ];
-            dispatch(new SendEmailJob($user->email, new UserNotificationToken($mail_data)));
+            SendEmailJob::dispatch($user->email, new UserNotificationToken($mail_data))->onConnection('mails');
             return response('Se han enviado el código confirmación al busón proporcionado!');
         }
     }
@@ -172,7 +172,7 @@ class UsersController extends Controller
             'url_confirm' => url('/'). '/confirmacion-de-cuenta/' . $user->secret
         ];
 
-        dispatch(new SendEmailJob($request->input('email'), new UserAccountConfirm($mail_data)));
+        SendEmailJob::dispatch($request->input('email'), new UserAccountConfirm($mail_data))->onConnection('mails');
 
         $data = [
             'user' => new UserOnly($user),

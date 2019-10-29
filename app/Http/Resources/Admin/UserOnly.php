@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Http\Resources\Admin;
+
+use App\Traits\Zodiac;
+use Carbon\Carbon;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+
+class UserOnly extends JsonResource
+{
+    use Zodiac;
+
+    public function toArray($request)
+    {
+        $avatar = $this->avatar === null ? Image::make($this->symbol($this->birthdate)['url'])->encode('data-url')
+            : Image::make(storage_path('app/public/') . $this->uid . '/profile/avatar/' . $this->avatar)->resize(150, 150)->encode('data-url', 50);
+
+       return [
+         'uid' => $this->uid,
+         'names' =>  $this->full_names,
+         'status'  => (string) $this->status_id,
+         'email' => $this->email,
+         'avatar' => $avatar->encoded,
+       ];
+    }
+}

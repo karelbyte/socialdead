@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'database'),
+    'default' => env('QUEUE_CONNECTION', 'sync'),
 
     /*
     |--------------------------------------------------------------------------
@@ -32,6 +32,13 @@ return [
 
         'sync' => [
             'driver' => 'sync',
+        ],
+
+        'mails' => [
+            'driver' => 'database',
+            'table' => 'jobs',
+            'queue' => 'mails',
+            'retry_after' => 90,
         ],
 
         'database' => [

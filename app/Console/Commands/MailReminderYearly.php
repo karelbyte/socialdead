@@ -45,7 +45,6 @@ class MailReminderYearly extends Command
         $remiders = Reminder::query()->with('emails', 'user')
             ->where('recurrent', 1)
             ->whereRaw('datediff(now(), moment) = 365')->get();
-        //\Log::debug($remiders);
         foreach ($remiders as $remider) {
           foreach ($remider['emails'] as $email) {
                 if ($email['status_id'] === 1) { // ACTIVO
@@ -61,7 +60,7 @@ class MailReminderYearly extends Command
                         'url_to_register' => 'http://socialdead.es'
                     ];
                     // enviar correo
-                    dispatch(new SendEmailJob($email['email'], new UserNotificationRecurrent($data_email)));
+                    SendEmailJob::dispatch($email['email'], new UserNotificationRecurrent($data_email))->onConnection('mails');
                 }
             }
         }

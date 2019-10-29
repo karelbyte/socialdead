@@ -65,6 +65,7 @@ class CapsuleUserResource extends JsonResource
                     'id' => $itm->item_id
                 ];
             }),
+            'securitys' => (bool) $this->securitys,
             'files' => $files,
             'users' => $this->shares()->pluck('to_user'),
             'recurrent' => (bool) $this->recurrent,

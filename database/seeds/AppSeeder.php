@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Admin\AdminUser;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -12,9 +13,15 @@ class AppSeeder extends Seeder
      */
     public function run()
     {
+        AdminUser::query()->create([
+            'names' => 'karel puerto diaz',
+            'email' => 'karelpuerto78@gmail.com',
+            'password' => Hash::make('12345'),
+            'secret' => \Illuminate\Support\Str::random(25),
+            'status_id' => 1
+        ]);
 
-
-
+/*
         $religions = [
             ['id' => 1, 'descriptor' => 'Ateo'],
             ['id' => 2, 'descriptor' => 'Budismo'],
@@ -68,6 +75,6 @@ class AppSeeder extends Seeder
            'secret' => \Illuminate\Support\Str::random(25),
            'birthdate' => '1978-10-07'
        ]);
-
+*/
     }
 }

@@ -29,7 +29,7 @@ class CapsuleConstable extends Model
     /**
      * @var array
      */
-    protected $fillable = ['capsule_id', 'user_uid', 'key'];
+    protected $fillable = ['capsule_id', 'user_uid', 'key', 'authoridez'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

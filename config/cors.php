@@ -13,7 +13,7 @@ return [
     */
    
     'supportsCredentials' => false,
-    'allowedOrigins' => ['http://socialdead.es', 'http://localhost:8080', 'http://localhost:8081'],
+    'allowedOrigins' => ['http://socialdead.es', 'http://localhost:8080', 'http://localhost:8082', 'http://admin.socialdead.es'],
     'allowedOriginsPatterns' => [],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],

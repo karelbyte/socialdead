@@ -62,7 +62,7 @@ class NotificationsController extends Controller
                 'to' => $data->toUser->full_names,
                 'note' => $request->msj
             ];
-            dispatch(new SendEmailJob($data->touser->email, new UserNotification($data_email)));
+            SendEmailJob::dispatch($data->touser->email, new UserNotification($data_email))->onConnection('mails');
         }
         broadcast(new NotificationEvent($request->uid, new Notify($data)))->toOthers();
         return response()->json('Se envió la notificación!');

@@ -45,7 +45,6 @@ class UserMailToConfirmAccount extends Command
             ->whereRaw('datediff(now(), created_at) >= 8' )
             ->get();
         foreach ($user_to_notify as $user) {
-
             $mail_data = [
                 'user_name' => $user->full_names,
                 'user_email' => $user->email,

@@ -21,6 +21,8 @@ Route::post('user-create', 'UsersController@store');
 Route::post('user-recovery-token', 'UsersController@recoveryToke');
 Route::post('user-password-set', 'UsersController@updatePasswordRecovery');
 
+
+// COMPEJO DE RUTAS DE EL FRONT SOCIAL DEAD
 Route::middleware(['auth:api'])->group(function () {
 
     Route::post('users/search', 'UsersController@search');
@@ -150,6 +152,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('kill', 'CapsulesController@delete');
         Route::post('update', 'CapsulesController@update');
         Route::post('activate', 'CapsulesController@activate');
+        Route::post('authorized-open', 'CapsulesController@authorizedOpen');
     });
 
     Route::prefix('files')->group(function () {

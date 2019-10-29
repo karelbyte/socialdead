@@ -1,5 +1,9 @@
 <?php
 
+use Illuminate\Http\Request;
+use \Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,13 +15,13 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', function () {
+    return view('welcome');
+});
 
 // CONFIRMACION DE CUENTA DEL USUARIO SOCIALDEAD
 Route::get('/confirmacion-de-cuenta/{token}', 'UsersController@confirmAcount');
@@ -26,9 +30,5 @@ Route::get('/confirmacion-de-cuenta/{token}', 'UsersController@confirmAcount');
 Route::get('/recuerdos/{token}', 'RemindersController@IndexSubReminder');
 Route::post('/recuerdos/actualizar', 'RemindersController@UpdateSubReminder');
 Route::get('/recuerdos/remover/{token}', 'RemindersController@cancelReminderEmail');
-
-Route::get('/prueba', function () {
-
-});
 
 

@@ -165,6 +165,7 @@ return [
         Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Pbmedia\LaravelFFMpeg\FFMpegServiceProvider::class,
+        SMartins\PassportMultiauth\Providers\MultiauthServiceProvider::class,
 
         /*
          * Package Service Providers...

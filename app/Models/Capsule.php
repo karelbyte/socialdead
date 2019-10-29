@@ -16,7 +16,8 @@ class Capsule extends Model
     /**
      * @var array
      */
-    protected $fillable = ['user_uid', 'moment', 'title', 'subtitle', 'note', 'opendate', 'activate', 'recurrent'];
+    protected $fillable = ['user_uid', 'moment', 'title', 'subtitle', 'note', 'opendate', 'securitys',
+        'activate', 'recurrent', 'iv'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -69,7 +70,7 @@ class Capsule extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class)->select('uid', 'full_names', 'email');
     }
 
 

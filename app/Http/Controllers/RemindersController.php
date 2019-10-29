@@ -126,7 +126,7 @@ class RemindersController extends Controller
                     'url_to_register' => 'http://socialdead.es'
                 ];
                 // enviar correo
-                dispatch(new SendEmailJob($email['value'], new UserNotificationRecurrent($data_email)));
+                SendEmailJob::dispatch($email['value'], new UserNotificationRecurrent($data_email))->onConnection('mails');
             }
         }
 
@@ -208,7 +208,7 @@ class RemindersController extends Controller
                     'url_to_register' => 'http://socialdead.es'
                 ];
                 // enviar correo
-                dispatch(new SendEmailJob($email['value'], new UserNotificationRecurrent($data_email)));
+                SendEmailJob::dispatch($email['value'], new UserNotificationRecurrent($data_email))->onConnection('mails');
             }
         }
 
@@ -243,7 +243,7 @@ class RemindersController extends Controller
                 'to' => $data->toUser->full_names,
                 'note' => 'Recordatorio compartido'
             ];
-            dispatch(new SendEmailJob($data->touser->email,new UserNotification($data_email)));
+            SendEmailJob::dispatch($data->touser->email, new UserNotification($data_email))->onConnection('mails');
         }
         broadcast(new NotificationEvent($uidUser, new Notify($data)))->toOthers();
         //-----------------
@@ -447,14 +447,13 @@ class RemindersController extends Controller
        ];
 
        if ($item['to_user_email'] !== null) {
-           dispatch(new SendEmailJob($item['to_user_email'],new SubReminderToUser($data)));
+           SendEmailJob::dispatch($item['to_user_email'], new SubReminderToUser($data))->onConnection('mails');
        }
         if ($item['to_user_email_cc'] !== null) {
-            dispatch(new SendEmailJob($item['to_user_email_cc'],new SubReminderToUser($data)));
+            SendEmailJob::dispatch($item['to_user_email_cc'], new SubReminderToUser($data))->onConnection('mails');
        }
         if ($item['to_user_email_ccc'] !== null) {
-            Mail::to($item['to_user_email_ccc'])->send(new SubReminderToUser($data));
-            dispatch(new SendEmailJob($item['to_user_email_ccc'],new SubReminderToUser($data)));
+            SendEmailJob::dispatch($item['to_user_email_ccc'], new SubReminderToUser($data))->onConnection('mails');
        }
 
        foreach ($request->sharelist as $User) {
@@ -479,7 +478,7 @@ class RemindersController extends Controller
                    'to' => $data->toUser->full_names,
                    'note' => 'Ayuda sobre recordatorio'
                ];
-               dispatch(new SendEmailJob($data->touser->email,new UserNotification($data_email)));
+               SendEmailJob::dispatch($data->touser->email, new UserNotification($data_email))->onConnection('mails');
            }
            broadcast(new NotificationEvent($User, new Notify($data)))->toOthers();
        }

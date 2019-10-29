@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Admin\AdminUser;
 use App\Models\User;
 use App\Observers\UidObserver;
 use Illuminate\Support\Facades\Event;
@@ -31,5 +32,7 @@ class EventServiceProvider extends ServiceProvider
     public function registerUuidObservers():void
     {
         User::observe(app(UidObserver::class));
+
+        AdminUser::observe(app(UidObserver::class));
     }
 }

@@ -15,6 +15,7 @@ use App\Models\Notification;
 use App\Models\Reminder;
 use App\Models\User;
 use Carbon\Carbon;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -33,6 +34,9 @@ class CapsulesController extends Controller
 
     public function save(Request $request) {
         $item = $request->all();
+        
+
+        $securitys = $item['securitys'] === 'true';
 
         $capsule = Capsule::query()
             ->create([
@@ -44,24 +48,30 @@ class CapsulesController extends Controller
                 'note' => $item['note'],
                 'recurrent' => (bool) $item['recurrent'],
                 'activate' => $item['activate'],
+                'securitys' => $securitys,
+                'iv' => Str::random(16)//openssl_random_pseudo_bytes(16)
             ]);
 
-        $key = Carbon::now()->timestamp . strtoupper(Str::random(5));
-        $capsule->constables()->create([
-           'user_uid' => $item['constable1'],
-           'key' => $key
-        ]);
+        // CONSTABLES
+        if ( $securitys) {
 
-        if ($item['constable2'] !== null && $item['constable2'] !== '') {
-            $key1 = strtoupper(Str::random(5)) .Carbon::now()->timestamp;
+            $key = Carbon::now()->timestamp . strtoupper(Str::random(5));
             $capsule->constables()->create([
-                'user_uid' => $item['constable2'],
-                'key' => $key1
+                'user_uid' => $item['constable1'],
+                'key' => $key
             ]);
-            $key .= $key1;
+
+            if (array_key_exists('constable2',  $item) && $item['constable2'] !== null && $item['constable2'] !== '') {
+                $key1 = strtoupper(Str::random(5)) .Carbon::now()->timestamp;
+                $capsule->constables()->create([
+                    'user_uid' => $item['constable2'],
+                    'key' => $key1
+                ]);
+                $key .= $key1;
+            }
         }
 
-
+        // IMAGENES
         if (array_key_exists('images',  $item) ) {
             foreach ( $item['images'] as $image) {
                 $capsule->details()->create([
@@ -71,6 +81,7 @@ class CapsulesController extends Controller
             }
         }
 
+        // MEDIAS
         if (array_key_exists('medias',  $item) ) {
             foreach ($item['medias'] as $media) {
                 $capsule->details()->create([
@@ -80,6 +91,7 @@ class CapsulesController extends Controller
             }
         }
 
+        // EMAIL DESTINATARIOS
         if (array_key_exists('emails',  $item) ) {
             foreach ($item['emails'] as $email) {
                 if ($email['value'] !== null) {
@@ -92,6 +104,7 @@ class CapsulesController extends Controller
             }
         }
 
+        // USUARIOS DEL SOCIAL
         if (array_key_exists('users',  $item) ) {
             foreach ($item['users'] as $userUid ) {
                 $capsule->shares()->create([
@@ -103,9 +116,9 @@ class CapsulesController extends Controller
         if (array_key_exists('files_cant',  $item) && (int) $item['files_cant'] > 0 ) {
             for ($i = 0; $i <=  (int) $item['files_cant']  -  1; $i++) {
                 $patch = $request->user()->uid .'/capsules/capsule'. $capsule->id;
-                if ($item['activate']) {
+                if ((bool)$item['activate'] &&  $securitys) {
                     $conten = file_get_contents( $item['file'.$i]);
-                    $cyfer =  openssl_encrypt($conten, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, openssl_random_pseudo_bytes(16));
+                    $cyfer =  openssl_encrypt($conten, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $capsule->iv);
                     $subname = strtoupper(str_replace( ' ', '', $item['file'.$i]->getClientOriginalName()));
                     Storage::disk('public')->put($patch. '/C-'. $subname, $cyfer);
                 } else {
@@ -113,12 +126,11 @@ class CapsulesController extends Controller
                     $item['file'.$i]->storeAs('public/'. $patch, $subname);
                 }
             }
-
         }
 
-        if  ($item['activate']) {
+        // SI SE CREA Y ACTIVA AL UNISONO
+        if  ($item['activate'] &&  $securitys ) {
             // NOTIFICANDO A ALGUACEAS
-
             $constables =  $capsule->constables->pluck('user_uid');
 
             $constable1 = isset($constables[0]) ? User::query()->find($constables[0]) : false;
@@ -148,7 +160,7 @@ class CapsulesController extends Controller
                     'status_id' => 1 // NO VISTO
                 ]);
 
-                dispatch(new SendEmailJob( $constable1->email, new NotificationConstableCapsule($data_email)));
+                SendEmailJob::dispatch($constable1->email, new NotificationConstableCapsule($data_email))->onConnection('mails');
 
                 broadcast(new NotificationEvent($constable1->uid, new Notify($data)))->toOthers();
             }
@@ -176,7 +188,7 @@ class CapsulesController extends Controller
                     'status_id' => 1 // NO VISTO
                 ]);
 
-                dispatch(new SendEmailJob($constable2->email, new NotificationConstableCapsule($data_email)));
+                SendEmailJob::dispatch($constable2->email, new NotificationConstableCapsule($data_email))->onConnection('mails');
 
                 broadcast(new NotificationEvent($constable2->uid, new Notify($data)))->toOthers();
             }
@@ -191,22 +203,28 @@ class CapsulesController extends Controller
 
         $capsule = Capsule::query()->find($item['id']);
 
-        // ALGUACEAS
-        $key = Carbon::now()->timestamp . strtoupper(Str::random(5));
-        $capsule->constables()->delete();
-        $capsule->constables()->create([
-            'user_uid' => $item['constable1'],
-            'key' => $key
-        ]);
+        $securitys = $item['securitys'] === 'true';
 
-        if (array_key_exists('constable2',  $item) && $item['constable2'] !== null && $item['constable2'] !== '') {
-            $key1 = strtoupper(Str::random(5)) .Carbon::now()->timestamp;
+        // ALGUACEAS
+
+        if ( $securitys) {
+
+            $key = Carbon::now()->timestamp . strtoupper(Str::random(5));
             $capsule->constables()->create([
-                'user_uid' => $item['constable2'],
-                'key' => $key1
+                'user_uid' => $item['constable1'],
+                'key' => $key
             ]);
-            $key .= $key1;
+
+            if (array_key_exists('constable2',  $item) && $item['constable2'] !== null && $item['constable2'] !== '') {
+                $key1 = strtoupper(Str::random(5)) .Carbon::now()->timestamp;
+                $capsule->constables()->create([
+                    'user_uid' => $item['constable2'],
+                    'key' => $key1
+                ]);
+                $key .= $key1;
+            }
         }
+
 
         // IMAGENES
         $capsule->details()->where('type', 3)->delete();
@@ -282,9 +300,10 @@ class CapsulesController extends Controller
                 'note' => $item['note'],
                 'recurrent' => (bool) $item['recurrent'],
                 'activate' => !$openDate_IsOK ? $item['activate']: 0,
+                'securitys' =>  $securitys,
             ]);
 
-        if ($item['activate']) {
+        if ($item['activate'] &&  $securitys) {
             // NOTIFICANDO A ALGUACEAS
 
             $constables = $capsule->constables->pluck('user_uid');
@@ -316,7 +335,7 @@ class CapsulesController extends Controller
                     'status_id' => 1 // NO VISTO
                 ]);
 
-                dispatch(new SendEmailJob( $constable1->email, new NotificationConstableCapsule($data_email)));
+                SendEmailJob::dispatch($constable1->email, new NotificationConstableCapsule($data_email))->onConnection('mails');
 
                 broadcast(new NotificationEvent($constable1->uid, new Notify($data)))->toOthers();
             }
@@ -344,14 +363,14 @@ class CapsulesController extends Controller
                     'status_id' => 1 // NO VISTO
                 ]);
 
-                dispatch(new SendEmailJob($constable2->email, new NotificationConstableCapsule($data_email)));
+                SendEmailJob::dispatch($constable2->email, new NotificationConstableCapsule($data_email))->onConnection('mails');
 
                 broadcast(new NotificationEvent($constable2->uid, new Notify($data)))->toOthers();
             }
         }
 
         // ENCRIPTANDO FICHEROS SI SE ACTIVA LA CAPSULA
-        if (!$openDate_IsOK && $item['activate']) {
+        if (!$openDate_IsOK && $item['activate'] &&  $securitys ) {
 
             $patchfiles = $request->user()->uid .'/capsules/capsule'. $request->id;
 
@@ -363,7 +382,7 @@ class CapsulesController extends Controller
                 $patch = storage_path() . '/app/public/' .$file; // Storage::disk('public')->get($file);
                 $base = $patchfiles . '/'. 'C-' . basename($patch);
                 $content = file_get_contents($patch);
-                $cyfer = openssl_encrypt($content, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, openssl_random_pseudo_bytes(16));
+                $cyfer = openssl_encrypt($content, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $capsule->iv);
                 Storage::disk('public')->put(  $base, $cyfer);
                 Storage::disk('public')->delete($patchfiles . '/'. basename($patch));
             }
@@ -373,9 +392,9 @@ class CapsulesController extends Controller
         if (array_key_exists('files_cant',  $item) && (int) $item['files_cant'] > 0 ) {
             for ($i = 0; $i <=  (int) $item['files_cant']  -  1; $i++) {
                 $patch = $request->user()->uid .'/capsules/capsule'. $capsule->id;
-                if (!$openDate_IsOK && $item['activate']) {
+                if (!$openDate_IsOK && $item['activate'] &&  $securitys) {
                     $conten = file_get_contents( $item['file'.$i]);
-                    $cyfer =  openssl_encrypt($conten, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, openssl_random_pseudo_bytes(16));
+                    $cyfer =  openssl_encrypt($conten, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $capsule->iv);
                     $subname = strtoupper(str_replace( ' ', '', $item['file'.$i]->getClientOriginalName()));
                     Storage::disk('public')->put($patch. '/C-'. $subname, $cyfer);
                 } else {
@@ -415,12 +434,12 @@ class CapsulesController extends Controller
             $patch = storage_path() . '/app/public/' .$file; // Storage::disk('public')->get($file);
             $base = $patchfiles . '/'. 'C-' . basename($patch);
             $content = file_get_contents($patch);
-            $cyfer = openssl_encrypt($content, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, openssl_random_pseudo_bytes(16));
+            $cyfer = openssl_encrypt($content, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $capsule->iv);
             Storage::disk('public')->put(  $base, $cyfer);
             Storage::disk('public')->delete($patchfiles . '/'. basename($patch));
         }
 
-       // $capsule->activate = 1;
+        $capsule->activate = 1;
         $capsule->save();
 
         // NOTIFICANDO A ALGUACEAS
@@ -454,7 +473,7 @@ class CapsulesController extends Controller
                 'status_id' => 1 // NO VISTO
             ]);
 
-            dispatch(new SendEmailJob( $constable1->email, new NotificationConstableCapsule($data_email)));
+            SendEmailJob::dispatch($constable1->email, new NotificationConstableCapsule($data_email))->onConnection('mails');
 
             broadcast(new NotificationEvent($constable1->uid, new Notify($data)))->toOthers();
         }
@@ -482,13 +501,53 @@ class CapsulesController extends Controller
                 'status_id' => 1 // NO VISTO
             ]);
 
-            dispatch(new SendEmailJob($constable2->email, new NotificationConstableCapsule($data_email)));
+            SendEmailJob::dispatch($constable2->email, new NotificationConstableCapsule($data_email))->onConnection('mails');
 
             broadcast(new NotificationEvent($constable2->uid, new Notify($data)))->toOthers();
         }
 
+       return $key;
+        // http_response_code(200);
+    }
 
-        http_response_code(200);
+
+    public function authorizedOpen(Request $request) {
+
+        $capsule = Capsule::query()->find($request->capsule_id);
+
+        $capsule->constables()->where('user_uid', $request->user()->uid)->update([
+            'authorized' => 1
+        ]);
+
+        $authorized =  $capsule->constables()->count();
+
+        $authorized_true = $capsule->constables()->where('authorized',1)->count();
+
+        if ($authorized === $authorized_true) {
+
+            $patchfiles = $capsule->user_uid .'/capsules/capsule'. $request->capsule_id;
+
+            $filesStore = Storage::disk('public')->files($patchfiles);
+
+            $key = $capsule->keyCypher();
+
+            foreach ($filesStore as $file) {
+                $patch = storage_path() . '/app/public/' .$file;
+                $base = $patchfiles . '/'. 'O-' . basename($patch);
+                $content = file_get_contents($patch);
+                $cyfer = openssl_decrypt($content, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $capsule->iv);
+                Storage::disk('public')->put($base, $cyfer);
+                Storage::disk('public')->delete($patchfiles . '/'. basename($patch));
+            }
+
+            $capsule->activate = 3; // ABIERTA
+            $capsule->save();
+
+        }
+
+         // return  $authorized. ' = ' . $authorized_true;
+
+        return http_response_code(200);
     }
 
     public function delete(Request $request) {

@@ -36,7 +36,7 @@ class PhotoShareResource extends JsonResource
             'title' => $this->photo->title,
             'subtitle' => $this->photo->subtitle,
             'note' => $this->photo->note,
-            'comments' => $resulComments,
+            'comments' => $resulComments->count() > 0 ?: [],
             'rating' => $this->photo->rating,
             'type' => 1, // IMAGENES
         ];

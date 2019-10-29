@@ -40,7 +40,7 @@ class IndexThinKingResource extends JsonResource
             'rating' => $this->rating,
             'type' => 5, // PENSAMIENTO
             'note' => $this->note,
-            'comments' => $resulComments,
+            'comments' => $resulComments->count() > 0 ?: [],
         ];
     }
 }

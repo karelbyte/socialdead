@@ -33,8 +33,8 @@ class CapsulesController extends Controller
     }
 
     public function save(Request $request) {
-        $item = $request->all();
         
+        $item = $request->all();
 
         $securitys = $item['securitys'] === 'true';
 

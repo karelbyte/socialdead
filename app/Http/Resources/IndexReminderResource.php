@@ -84,7 +84,7 @@ class IndexReminderResource extends JsonResource
             'type' => 4, // Recordatorio
             'photos' => $fotos,
             'videos' => $videos,
-            'comments' => $resulComments,
+            'comments' => $resulComments->count() > 0 ?: [],
             'audios' => $audios
         ];
     }

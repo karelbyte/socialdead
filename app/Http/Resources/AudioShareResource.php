@@ -39,7 +39,7 @@ class AudioShareResource extends JsonResource
             'subtitle' => $this->audio->subtitle,
             'rating' => $this->audio->rating,
             'thumbs' => $thumbs,
-            'comments' => $resulComments,
+            'comments' => $resulComments->count() > 0 ?: [],
             'note' => $this->audio->note,
             'type' => 3, // AUDIO
         ];

@@ -43,7 +43,7 @@ class IndexAudioResource extends JsonResource
             'rating' => $this->rating,
             'thumbs' => $thumbs,
             'note' => $this->note,
-            'comments' => $resulComments,
+            'comments' => $resulComments->count() > 0 ? $resulComments : [],
             'type' => 3, // AUDIO
         ];
     }

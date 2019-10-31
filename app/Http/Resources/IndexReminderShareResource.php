@@ -75,7 +75,7 @@ class IndexReminderShareResource extends JsonResource
             'note' => $this->note,
             'rating' => $this->rating,
             'type' => 4, // Recordatorio
-            'comments' => $resulComments->count() > 0 ?: [],
+            'comments' => $resulComments->count() > 0 ? $resulComments : [],
             'photos' => $fotos,
             'videos' => $videos,
             'audios' => $audios

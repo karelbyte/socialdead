@@ -38,7 +38,7 @@ class IndexPhotoResource extends JsonResource
             'title' => $this->title,
             'subtitle' => $this->subtitle,
             'rating' => $this->rating,
-            'comments' => $resulComments->count() > 0 ?: [],
+            'comments' => $resulComments->count() > 0 ? $resulComments : [],
             'note' => $this->note,
             'type' => 1,
             'url'=> Image::make(storage_path('app/public/') . $this->user_uid . '/photos/' . $this->url)->encode('data-url', 70)->encoded,

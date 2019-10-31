@@ -46,7 +46,7 @@ class VideoShareResource extends JsonResource
             'rating' => $this->video->rating,
             'note' => $this->video->note,
             'thumbs' => $thumbs,
-            'comments' => $resulComments->count() > 0 ?: [],
+            'comments' => $resulComments->count() > 0 ? $resulComments : [],
             'type' => 2, // VIDEO
         ];
     }

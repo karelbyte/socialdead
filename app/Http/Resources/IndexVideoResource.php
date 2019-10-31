@@ -49,7 +49,7 @@ class IndexVideoResource extends JsonResource
             'subtitle' => $this->subtitle,//  $user->full_names . ' publico este video '. Carbon::parse($this->moment)->diffForHumans(),
             'rating' => $this->rating,
             'note' => $this->note,
-            'comments' => $resulComments->count() > 0 ?: [],
+            'comments' => $resulComments->count() > 0 ? $resulComments : [],
             'thumbs' => $thumbs,
             'type' => 2, // VIDEO
         ];

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 
 use App\Events\MessageEvent;
+use App\Events\SystemMessageEvent;
+use App\Http\Resources\Admin\SystemChatResource;
 use App\Http\Resources\ChatListResource;
 use App\Http\Resources\ChatResource;
 use App\Models\Chat;
@@ -29,6 +31,7 @@ class ChatsController extends Controller
     }
 
     public function setMessage(Request $request) {
+
           $msj = Chat::query()->create([
               'user_uid' => $request->uid,
               'for_user_uid' => $request->to,
@@ -37,7 +40,15 @@ class ChatsController extends Controller
               'msj' =>  $request->msj[$request->type]
           ]);
 
-      broadcast(new MessageEvent($request->to, new ChatResource($msj) ))->toOthers();
+      if ($request->has('system') && $request->input('system') === true) {
+
+          broadcast(new SystemMessageEvent($request->to, new SystemChatResource($msj) ))->toOthers();
+
+      }  else {
+
+          broadcast(new MessageEvent($request->to, new ChatResource($msj) ))->toOthers();
+      }
+
       return http_response_code(200);
     }
 

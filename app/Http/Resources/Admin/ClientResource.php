@@ -32,6 +32,7 @@ class ClientResource extends JsonResource
          'avatar' => $avatar->encoded,
          'gigas' =>  $inStore !== null ? $inStore->gigas : 0,
          'inuse' =>  $inStore !== null ? $inStore->inuse :0,
+         'bell' => false,
          'contacts' => $count_contact
        ];
     }

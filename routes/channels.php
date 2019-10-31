@@ -19,3 +19,7 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 Broadcast::channel('notifications.*', function ($user) {
     return true;
 });
+
+ Broadcast::channel('system.*', function ($user) {
+     return true;
+ });

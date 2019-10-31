@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\MessageEvent;
+use App\Events\SystemMessageEvent;
+use App\Http\Resources\Admin\SystemChatResource;
 use App\Http\Resources\ChatListResource;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ChatResource;
@@ -33,7 +35,7 @@ class ChatsController extends Controller
               'msj' =>  $request->msj[$request->type]
           ]);
 
-      broadcast(new MessageEvent($request->to, new ChatResource($msj) ))->toOthers();
+      broadcast(new SystemMessageEvent($request->to, new SystemChatResource($msj) ))->toOthers();
       return http_response_code(200);
     }
 

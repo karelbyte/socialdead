@@ -163,6 +163,7 @@ class UsersController extends Controller
                 'username' => $request->input('email'),
                 'password' => $request->input('password'),
                 'scope' => '',
+                'provider' => 'users'
             ],
         ]);
 

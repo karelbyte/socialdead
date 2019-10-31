@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Resources\Admin\UserOnly;
+use App\Http\Resources\Admin\ClientResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class ClientsController extends Controller
 {
@@ -28,7 +29,7 @@ class ClientsController extends Controller
 
         $list =  $datos->skip($skip)->take($request['take'])->get();
 
-        $list = UserOnly::collection($list);
+        $list = ClientResource::collection($list);
 
         $result = [
 
@@ -41,6 +42,11 @@ class ClientsController extends Controller
         return response()->json($result,  200, [], JSON_NUMERIC_CHECK);
     }
 
+    public function kill(Request $request) {
+        Storage::disk('public')->deleteDirectory($request->user_uid_kill);
+        User::query()->where('uid', $request->user_uid_kill)->delete();
+        return response()->json('Usuario eliminado cone exito!',  200, [], JSON_NUMERIC_CHECK);
+    }
     /*
     $skip = ((int) $request->input('pagination.page') - 1) * (int) $request->input('pagination.rowsPerPage');
 

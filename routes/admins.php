@@ -24,7 +24,21 @@ Route::middleware(['auth:admin'])->namespace('Admin')->group(function () {
 
     Route::prefix('clients')->group(function () {
         Route::post('/list', 'ClientsController@getList');
+        Route::post('/kill', 'ClientsController@kill');
 
+    });
+
+    Route::prefix('user')->group(function () {
+        Route::get('/', 'UsersController@getUser');
+    });
+
+    Route::prefix('notifications')->group(function () {
+        Route::post('store', 'NotificationsController@store');
+    });
+
+    Route::prefix('chats')->group(function () {
+        Route::post('messages', 'ChatsController@getMessages');
+        Route::post('send-message', 'ChatsController@setMessage');
     });
 });
 

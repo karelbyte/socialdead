@@ -13,6 +13,7 @@ class UserStatus extends Model
     const ACTIVO = 1;
     const INACTIVO = 2;
     const DESCONECTADO = 3;
+    const BANEADO = 4;
 
     protected $table = 'users_status';
 

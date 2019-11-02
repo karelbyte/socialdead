@@ -260,4 +260,31 @@ class UsersController extends Controller
 
         return $sorted->values()->all();
     }
+
+    public function userCheckLock(Request $request) {
+
+        $user =  User::query()->where('email', $request->email)->first();
+
+        if  ($user !== null) {
+            if ($user->status_id === UserStatus::BANEADO) {
+                $data = [
+                    'isOK' => false,
+                    'msj' => 'El usuario propietario del email proporcionado ha sido bloqueado, pongase en contacto con SOCIALDEAD!'
+                ];
+                return response()->json($data);
+            }
+            $data = [
+                'isOK' => true,
+                'msj' => '..'
+            ];
+            return response()->json($data);
+
+        } else {
+            $data = [
+                'isOK' => false,
+                'msj' => 'El email proporcionado no existe en nuestra red!'
+            ];
+            return response()->json($data);
+        }
+    }
 }

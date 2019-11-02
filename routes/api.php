@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/users', function (Request $request) {
 Route::post('user-create', 'UsersController@store');
 Route::post('user-recovery-token', 'UsersController@recoveryToke');
 Route::post('user-password-set', 'UsersController@updatePasswordRecovery');
+Route::post('user-check', 'UsersController@userCheckLock');
 
 
 // COMPEJO DE RUTAS DE EL FRONT SOCIAL DEAD

@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ClientEraserEvent;
+use App\Events\UpdateUserStatusEvent;
 use App\Http\Resources\Admin\ClientResource;
+use App\Models\Chat;
 use App\Models\User;
+use App\Models\UserStatus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -44,36 +48,35 @@ class ClientsController extends Controller
 
     public function kill(Request $request) {
         Storage::disk('public')->deleteDirectory($request->user_uid_kill);
+        $user = User::query()->find( $request->user_uid_kill);
+        User::query()->where('uid',  $request->user_uid_kill)->update(['status_id' => UserStatus::DESCONECTADO]);
+        foreach ($user->contacts as $contact ) {
+            broadcast(new UpdateUserStatusEvent($contact->contact_user_uid))->toOthers();
+        }
+        broadcast(new ClientEraserEvent($request->user_uid_kill))->toOthers();
+        Chat::query()->where('user_uid', $request->user_uid_kill)->delete();
         User::query()->where('uid', $request->user_uid_kill)->delete();
         return response()->json('Usuario eliminado cone exito!',  200, [], JSON_NUMERIC_CHECK);
     }
-    /*
-    $skip = ((int) $request->input('pagination.page') - 1) * (int) $request->input('pagination.rowsPerPage');
 
-
-        $datos = User::query()->select('uid', 'avatar', 'full_names', 'email', 'status');
-
-        if ( $request->has('filter')) {
-
-            $datos->where( $request->input('pagination.sortBy'), 'LIKE', '%'. $request->input('filter').'%');
-        }
-
-        if ( $request->input('pagination.descending')) {
-            $datos->orderby( $request->input('pagination.sortBy'), 'desc');
+    public function userlock(Request $request) {
+        $user = User::query()->find($request->user_uid_lock);
+        if ((int) $user->status_id === (int) UserStatus::BANEADO) {
+            $status = UserStatus::INACTIVO;
+            $msj = 'Usuario liberado con exito';
         } else {
-            $datos->orderby( $request->input('pagination.sortBy'), 'asc');
+            $status = UserStatus::BANEADO;
+            $msj = 'Usuario bloqueado con exito!';
+        }
+        User::query()->where('uid', $request->user_uid_lock)->update(['status_id' => $status]);
+        if ((int)$status === (int) UserStatus::BANEADO) {
+            broadcast(new ClientEraserEvent($request->user_uid_lock))->toOthers();
+            foreach ($user->contacts as $contact ) {
+                broadcast(new UpdateUserStatusEvent($contact->contact_user_uid))->toOthers();
+            }
         }
 
-        $total = $datos->count();
+        return response()->json($msj,  200, [], JSON_NUMERIC_CHECK);
+    }
 
-        $list =  $datos->skip($skip)->take((int)$request['pagination.rowsPerPage'])->get();
-
-        $result = [
-
-            'total' => $total,
-
-            'list' =>  $list,
-
-        ];
-    */
 }

@@ -25,7 +25,7 @@ Route::middleware(['auth:admin'])->namespace('Admin')->group(function () {
     Route::prefix('clients')->group(function () {
         Route::post('/list', 'ClientsController@getList');
         Route::post('/kill', 'ClientsController@kill');
-
+        Route::post('/lock', 'ClientsController@userlock');
     });
 
     Route::prefix('user')->group(function () {
